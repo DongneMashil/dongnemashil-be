@@ -31,4 +31,17 @@ public class Review {
 
     @Column
     private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime modifiedAt;
+
+    @Column
+    public String profileImg_url;
+
+    @Column
+    public String nickname;
+
+    @Column
+    public String address;
+
 }
