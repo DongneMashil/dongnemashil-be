@@ -34,23 +34,40 @@ public class ReviewService {
         return new DetailPageResponseDto(reviewRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST)));
     }
+
     @Transactional
     public DetailPageResponseDto updateReview(Long id,
                                               DetailPageRequestDto detailPageRequestDto,
                                               UserDetailsImpl userDetails) {
-        if(id == null){
-            throw new CustomException(ErrorCode.REVIEW_NOT_EXIST);
-        }
-
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
-
-        if (!review.getId().equals(userDetails.getUser().getId())) {
-            throw new CustomException(ErrorCode.NOT_FOUND_USER);
-        }
+        Review review = findReviewById(id);
+        validate(review, userDetails);
         review.update(detailPageRequestDto);
 
         return new DetailPageResponseDto(review);
     }
+
+    public void deleteReview(Long id, UserDetailsImpl userDetails) {
+
+        Review review = findReviewById(id);
+        validate(review, userDetails);
+        reviewRepository.delete(review);
+    }
+
+
+    private Review findReviewById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
+    }
+
+    private void validate(Review review, UserDetailsImpl userDetails) {
+
+        if (!userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")) {
+            if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+                throw new CustomException(ErrorCode.NOT_THE_AUTHOR);
+            }
+        }
+    }
 }
+
+
 

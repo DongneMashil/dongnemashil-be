@@ -22,11 +22,12 @@ public class DetailPageResponseDto {
     private Integer commentCnt;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private String tag;
 
 
     public DetailPageResponseDto(Review review){
         this.id=review.getId();
-        this.content=review.getTag();
+        this.content=review.getContent();
         this.img_url=review.getImg_url();
         this.video_url=review.getImg_url();
         this.profileImg_url=review.getProfileImg_url();
@@ -37,5 +38,6 @@ public class DetailPageResponseDto {
         this.commentCnt=review.getCommentCnt();
         this.createdAt=review.getCreatedAt();
         this.modifiedAt=review.getModifiedAt();
+        this.tag=review.getTag();
     }
 }
