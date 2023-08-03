@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class ReviewResponseDto {
     private Long id;
-    private String address;
+    private String roadName;
     private String img_url;
     private String tag;
     private Integer likeCnt;
@@ -17,7 +17,7 @@ public class ReviewResponseDto {
 
     public ReviewResponseDto(Review review){
         this.id = review.getId();
-        this.address = review.getAddress();
+        this.roadName = review.getRoadName();
         this.img_url = review.getImg_url();
         this.tag = review.getTag();
         this.likeCnt = review.getLikeCnt();

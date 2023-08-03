@@ -18,7 +18,7 @@ public class Review {
     private Long id;
 
     @Column
-    private String address;
+    private String roadName;
 
     @Column
     private String img_url;
@@ -29,6 +29,6 @@ public class Review {
     @Column
     private Integer likeCnt;
 
-    @Column(updatable = false)
+    @Column
     private LocalDateTime createdAt;
 }

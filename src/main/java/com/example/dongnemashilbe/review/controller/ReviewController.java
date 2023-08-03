@@ -15,30 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/main/likes")
-    public Slice<ReviewResponseDto> getAllReviewsByLikes(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    @GetMapping("/")
+    public final Slice<ReviewResponseDto> getAllReviews(
+            @RequestParam(value = "type", required = true) String type,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "12") Integer size ) {
 
-        Pageable pageable = PageRequest.of(page, size);
-        Slice<Review> sliceReviews = reviewService.findAllByLikes(pageable);
-
-        return sliceReviews.map(ReviewResponseDto::new);
-    }
-
-    @GetMapping("/main/recent")
-    public Slice<ReviewResponseDto> getAllReviewsByRecent(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        Slice<Review> sliceReviews = reviewService.findAllByRecent(pageable);
-
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Slice<Review> sliceReviews = reviewService.findAllByType(type, pageable);
         return sliceReviews.map(ReviewResponseDto::new);
     }
 }
