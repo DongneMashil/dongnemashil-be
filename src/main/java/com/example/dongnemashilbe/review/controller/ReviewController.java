@@ -2,6 +2,7 @@ package com.example.dongnemashilbe.review.controller;
 
 
 import com.example.dongnemashilbe.review.entity.Review;
+import com.example.dongnemashilbe.review.requestdto.DetailPageRequestDto;
 import com.example.dongnemashilbe.review.responsedto.DetailPageResponseDto;
 import com.example.dongnemashilbe.review.responsedto.MainPageReviewResponseDto;
 import com.example.dongnemashilbe.review.service.ReviewService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,8 +34,15 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    public DetailPageResponseDto getReview(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return reviewService.getReview(id,userDetails);
+    public DetailPageResponseDto getReview(@PathVariable Long id){
+        return reviewService.getReview(id);
+    }
+
+    @PutMapping("/{id}")
+    public DetailPageResponseDto updateReview(@PathVariable Long id,
+                                              @RequestBody DetailPageRequestDto detailPageRequestDto,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
+           return reviewService.updateReview(id,detailPageRequestDto,userDetails);
     }
 }
 

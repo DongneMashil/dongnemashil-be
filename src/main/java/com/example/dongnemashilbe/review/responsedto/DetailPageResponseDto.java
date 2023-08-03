@@ -17,6 +17,9 @@ public class DetailPageResponseDto {
     private String profileImg_url;
     private String nickname;
     private String address;
+    private String title;
+    private Integer likeCnt;
+    private Integer commentCnt;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -29,6 +32,9 @@ public class DetailPageResponseDto {
         this.profileImg_url=review.getProfileImg_url();
         this.nickname=review.getNickname();
         this.address=review.getAddress();
+        this.title=review.getTitle();
+        this.likeCnt=review.getLikeCnt();
+        this.commentCnt=review.getCommentCnt();
         this.createdAt=review.getCreatedAt();
         this.modifiedAt=review.getModifiedAt();
     }
