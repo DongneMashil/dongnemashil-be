@@ -40,4 +40,22 @@ public class DetailPageResponseDto {
         this.modifiedAt=review.getModifiedAt();
         this.tag=review.getTag();
     }
+
+    public DetailPageResponseDto(Review review, Integer likeCount){
+        this.id = review.getId();
+        this.content = review.getContent();
+        this.img_url = review.getImg_url();
+        this.video_url = review.getImg_url();
+        this.profileImg_url = review.getProfileImg_url();
+        this.nickname = review.getNickname();
+        this.address = review.getAddress();
+        this.title = review.getTitle();
+        this.likeCnt = likeCount;
+        this.commentCnt = review.getCommentCnt();
+        this.createdAt = review.getCreatedAt();
+        this.modifiedAt = review.getModifiedAt();
+        this.tag = review.getTag();
+    }
+
+
 }
