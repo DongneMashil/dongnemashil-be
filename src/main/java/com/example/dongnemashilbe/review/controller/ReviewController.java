@@ -2,9 +2,9 @@ package com.example.dongnemashilbe.review.controller;
 
 
 import com.example.dongnemashilbe.review.entity.Review;
-import com.example.dongnemashilbe.review.requestdto.DetailPageRequestDto;
-import com.example.dongnemashilbe.review.responsedto.DetailPageResponseDto;
-import com.example.dongnemashilbe.review.responsedto.MainPageReviewResponseDto;
+import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
+import com.example.dongnemashilbe.review.dto.DetailPageResponseDto;
+import com.example.dongnemashilbe.review.dto.MainPageReviewResponseDto;
 import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;

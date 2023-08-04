@@ -1,12 +1,11 @@
 package com.example.dongnemashilbe.review.entity;
 
-import com.example.dongnemashilbe.review.requestdto.DetailPageRequestDto;
+import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
