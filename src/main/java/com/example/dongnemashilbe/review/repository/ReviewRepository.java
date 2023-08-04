@@ -17,5 +17,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT r FROM Review r ORDER BY r.createdAt DESC")
     Slice<Review> findAllByRecent(Pageable pageable);
+
 }
 
