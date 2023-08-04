@@ -57,13 +57,13 @@ public class ReviewService {
 
 
     public DetailPageResponseDto getReview(Long id) {
+
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
         Integer likeCount = likeRepository.countByReview(review);
 
-        return new DetailPageResponseDto(review, likeCount);
+        return new DetailPageResponseDto(review, likeCount, reviewRepository.countCommentsByReviewId(id));
     }
-
 
 
 
