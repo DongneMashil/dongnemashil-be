@@ -44,8 +44,8 @@ public class UserService {
         User user = new User(email,password,nickname,UserRoleEnum.USER);
         userRepository.save(user);
 
-        String accessToken = jwtUtil.createAccessToken(email,UserRoleEnum.USER);
-        String refreshToken = jwtUtil.createRefreshToken(email);
+        String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
+        String refreshToken = jwtUtil.createRefreshToken(nickname);
 
         jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
         jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
@@ -56,9 +56,9 @@ public class UserService {
 
         String tokenValue = jwtUtil.substringToken(token);
 
-        String email = jwtUtil.getUserInfoFromToken(tokenValue).getSubject();
+        String nickname = jwtUtil.getUserInfoFromToken(tokenValue).getSubject();
 
-        String accessToken = jwtUtil.createAccessToken(email,UserRoleEnum.USER);
+        String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
 
         jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
     }
