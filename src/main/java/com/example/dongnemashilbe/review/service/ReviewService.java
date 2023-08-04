@@ -31,8 +31,10 @@ public class ReviewService {
     }
 
     public DetailPageResponseDto getReview(Long id) {
+
+
         return new DetailPageResponseDto(reviewRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST)));
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST)), reviewRepository.countCommentsByReviewId(id));
     }
 
     @Transactional

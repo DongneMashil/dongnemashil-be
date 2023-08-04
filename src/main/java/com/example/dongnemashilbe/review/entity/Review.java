@@ -1,5 +1,6 @@
 package com.example.dongnemashilbe.review.entity;
 
+import com.example.dongnemashilbe.comment.entity.Comment;
 import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.util.Timestamped;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -62,6 +65,9 @@ public class Review extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "review")
+    private List<Comment> commentList = new ArrayList<>();
 
     public void update(DetailPageRequestDto detailPageRequestDto) {
         this.address = detailPageRequestDto.getAddress();
