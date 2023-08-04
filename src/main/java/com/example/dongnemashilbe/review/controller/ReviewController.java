@@ -1,9 +1,9 @@
 package com.example.dongnemashilbe.review.controller;
 
 
-import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
 import com.example.dongnemashilbe.review.dto.DetailPageResponseDto;
+import com.example.dongnemashilbe.review.dto.LikeResponseDto;
 import com.example.dongnemashilbe.review.dto.MainPageReviewResponseDto;
 import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,8 +29,7 @@ public class ReviewController {
             @RequestParam(value = "size", defaultValue = "12") Integer size ) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Slice<Review> sliceReviews = reviewService.findAllByType(type, pageable);
-        return sliceReviews.map(MainPageReviewResponseDto::new);
+        return reviewService.findAllByType(type, pageable);
     }
 
     @GetMapping("/{id}")
@@ -44,6 +44,7 @@ public class ReviewController {
            return reviewService.updateReview(id,detailPageRequestDto,userDetails);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable Long id,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -51,5 +52,10 @@ public class ReviewController {
     }
 
 
+    @Transactional
+    @PostMapping("/{id}/likes")
+    public LikeResponseDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return reviewService.like(id, userDetails.getUser().getNickname());
+    }
 }
 

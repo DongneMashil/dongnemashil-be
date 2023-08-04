@@ -43,7 +43,7 @@ public class DetailPageResponseDto {
         this.tag=review.getTag();
         this.commentResponseDtoList=review.getCommentList().stream().map(CommentResponseDto::new).toList();
     }
-    public DetailPageResponseDto(Review review,Long commentCnt){
+    public DetailPageResponseDto(Review review,Integer likeCount,Long commentCnt){
         this.id=review.getId();
         this.content=review.getContent();
         this.img_url=review.getImg_url();
@@ -52,7 +52,7 @@ public class DetailPageResponseDto {
         this.nickname=review.getNickname();
         this.address=review.getAddress();
         this.title=review.getTitle();
-        this.likeCnt=review.getLikeCnt();
+        this.likeCnt=likeCount;
         this.commentCnt= Math.toIntExact(commentCnt);
         this.createdAt=review.getCreatedAt();
         this.modifiedAt=review.getModifiedAt();

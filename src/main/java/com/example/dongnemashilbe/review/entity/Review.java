@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -65,6 +67,9 @@ public class Review extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "review")
+    private List<Like> like;
 
     @OneToMany(mappedBy = "review")
     private List<Comment> commentList = new ArrayList<>();

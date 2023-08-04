@@ -16,12 +16,12 @@ public class MainPageReviewResponseDto {
     private Integer likeCnt;
 
 
-    public MainPageReviewResponseDto(Review review){
+    public MainPageReviewResponseDto(Review review, Integer likeCount){
         this.id = review.getId();
         this.roadName = review.getRoadName();
         this.img_url = review.getImg_url();
         this.tag = review.getTag();
-        this.likeCnt = review.getLikeCnt();
+        this.likeCnt = likeCount;
         this.profileImg_url = review.getProfileImg_url();
 
     }
