@@ -31,7 +31,7 @@ public class User {
     private String profileImg_url;
 
     @Column
-    private String kakao_id;
+    private Long kakaoId;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -47,4 +47,11 @@ public class User {
         this.role = role;
     }
 
+    public User(String nickname, String encodedPassword, UserRoleEnum user, Long kakaoId, String email) {
+        this.nickname = nickname;
+        this.password = encodedPassword;
+        this.role = user;
+        this.kakaoId = kakaoId;
+        this.email = email;
+    }
 }

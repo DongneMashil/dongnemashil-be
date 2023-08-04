@@ -53,12 +53,12 @@ public class JwtUtil {
     }
 
     // 엑세스 토큰 생성
-    public String createAccessToken(String email, UserRoleEnum role) {
+    public String createAccessToken(String nickname, UserRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(email) // 사용자 식별자값(ID)
+                        .setSubject(nickname) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + ACCESSTOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
@@ -67,12 +67,12 @@ public class JwtUtil {
     }
 
     // 리프세쉬 토큰 생성
-    public String createRefreshToken(String email) {
+    public String createRefreshToken(String nickname) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(email) // 사용자 식별자값(ID)
+                        .setSubject(nickname) // 사용자 식별자값(ID)
                         .setExpiration(new Date(date.getTime() + REFRESHTOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
