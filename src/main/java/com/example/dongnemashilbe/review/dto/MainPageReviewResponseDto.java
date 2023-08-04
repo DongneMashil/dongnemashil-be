@@ -1,4 +1,4 @@
-package com.example.dongnemashilbe.review.responsedto;
+package com.example.dongnemashilbe.review.dto;
 
 
 import com.example.dongnemashilbe.review.entity.Review;

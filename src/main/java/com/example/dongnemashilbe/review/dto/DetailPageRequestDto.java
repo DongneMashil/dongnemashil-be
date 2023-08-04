@@ -1,4 +1,4 @@
-package com.example.dongnemashilbe.review.requestdto;
+package com.example.dongnemashilbe.review.dto;
 
 import lombok.Getter;
 
