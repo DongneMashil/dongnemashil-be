@@ -1,10 +1,8 @@
 package com.example.dongnemashilbe.review.controller;
 
 
-import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
-import com.example.dongnemashilbe.review.dto.DetailPageResponseDto;
-import com.example.dongnemashilbe.review.dto.LikeResponseDto;
-import com.example.dongnemashilbe.review.dto.MainPageReviewResponseDto;
+import com.example.dongnemashilbe.comment.dto.CommentRequestDto;
+import com.example.dongnemashilbe.review.dto.*;
 import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +33,12 @@ public class ReviewController {
     @GetMapping("/{id}")
     public DetailPageResponseDto getReview(@PathVariable Long id){
         return reviewService.getReview(id);
+    }
+
+    @PostMapping("")
+    public WriteReviewResponseDto createReview(@RequestBody WriteReviewRequestDto writeReviewRequestDto,
+                                               @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return reviewService.createReview(writeReviewRequestDto, userDetails.getUser());
     }
 
     @PutMapping("/{id}")

@@ -14,9 +14,9 @@ public class DetailPageResponseDto {
 
     private Long id;
     private String content;
-    private String img_url;
-    private String video_url;
-    private String profileImg_url;
+    private String imgUrl;
+    private String videoUrl;
+    private String profileImgUrl;
     private String nickname;
     private String address;
     private String title;
@@ -30,14 +30,11 @@ public class DetailPageResponseDto {
     public DetailPageResponseDto(Review review){
         this.id=review.getId();
         this.content=review.getContent();
-        this.img_url=review.getImg_url();
-        this.video_url=review.getImg_url();
-        this.profileImg_url=review.getProfileImg_url();
-        this.nickname=review.getNickname();
+        this.imgUrl=review.getImgUrl();
+        this.videoUrl=review.getVideoUrl();
+        this.profileImgUrl=review.getProfileImgUrl();
         this.address=review.getAddress();
         this.title=review.getTitle();
-        this.likeCnt=review.getLikeCnt();
-        this.commentCnt=review.getCommentCnt();
         this.createdAt=review.getCreatedAt();
         this.modifiedAt=review.getModifiedAt();
         this.tag=review.getTag();
@@ -46,10 +43,9 @@ public class DetailPageResponseDto {
     public DetailPageResponseDto(Review review,Integer likeCount,Long commentCnt){
         this.id=review.getId();
         this.content=review.getContent();
-        this.img_url=review.getImg_url();
-        this.video_url=review.getImg_url();
-        this.profileImg_url=review.getProfileImg_url();
-        this.nickname=review.getNickname();
+        this.imgUrl=review.getImgUrl();
+        this.videoUrl=review.getVideoUrl();
+        this.profileImgUrl=review.getProfileImgUrl();
         this.address=review.getAddress();
         this.title=review.getTitle();
         this.likeCnt=likeCount;

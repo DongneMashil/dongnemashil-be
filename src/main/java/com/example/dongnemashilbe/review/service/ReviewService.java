@@ -2,14 +2,11 @@ package com.example.dongnemashilbe.review.service;
 
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
-import com.example.dongnemashilbe.review.dto.LikeResponseDto;
-import com.example.dongnemashilbe.review.dto.MainPageReviewResponseDto;
+import com.example.dongnemashilbe.review.dto.*;
 import com.example.dongnemashilbe.review.entity.Like;
 import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.review.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
-import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
-import com.example.dongnemashilbe.review.dto.DetailPageResponseDto;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
@@ -66,7 +63,18 @@ public class ReviewService {
     }
 
 
+    public WriteReviewResponseDto createReview(WriteReviewRequestDto writeReviewRequestDto, User user) {
 
+        if (writeReviewRequestDto.getVideoUrl() == null || writeReviewRequestDto.getImgUrl() == null){
+            throw new CustomException(ErrorCode.ELEMENTS_IS_REQUIRED);
+        }
+        User usercheck = userRepository.findByNickname(user.getNickname())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        Review review = new Review(writeReviewRequestDto,usercheck);
+
+        return new WriteReviewResponseDto(reviewRepository.save(review));
+    }
 
     @Transactional
     public DetailPageResponseDto updateReview(Long id,
@@ -126,6 +134,7 @@ public class ReviewService {
             }
         }
     }
+
 
 
 }
