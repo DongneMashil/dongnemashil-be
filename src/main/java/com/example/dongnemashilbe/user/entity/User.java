@@ -28,7 +28,7 @@ public class User {
     private String nickname;
 
     @Column
-    private String profileImg_url;
+    private String profileImgUrl;
 
     @Column
     private Long kakaoId;

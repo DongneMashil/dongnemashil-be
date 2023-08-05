@@ -10,8 +10,8 @@ import lombok.Setter;
 public class MainPageReviewResponseDto {
     private Long id;
     private String roadName;
-    private String img_url;
-    private String profileImg_url;
+    private String imgUrl;
+    private String profileImgUrl;
     private String tag;
     private Integer likeCnt;
 
@@ -19,10 +19,10 @@ public class MainPageReviewResponseDto {
     public MainPageReviewResponseDto(Review review, Integer likeCount){
         this.id = review.getId();
         this.roadName = review.getRoadName();
-        this.img_url = review.getImg_url();
+        this.imgUrl = review.getImgUrl();
         this.tag = review.getTag();
         this.likeCnt = likeCount;
-        this.profileImg_url = review.getProfileImg_url();
+        this.profileImgUrl = review.getProfileImgUrl();
 
     }
 }

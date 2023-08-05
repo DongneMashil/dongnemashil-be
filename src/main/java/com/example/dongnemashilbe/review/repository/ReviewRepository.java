@@ -13,13 +13,16 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    @Query("SELECT r FROM Review r ORDER BY r.likeCnt DESC, r.id DESC")
+    @Query("SELECT r FROM Review r ORDER BY SIZE(r.likes) DESC, r.id DESC")
     Slice<Review> findAllByLikes(Pageable pageable);
+
 
     @Query("SELECT r FROM Review r ORDER BY r.createdAt DESC")
     Slice<Review> findAllByRecent(Pageable pageable);
 
     @Query("SELECT COUNT(c) from Comment c where c.review.id = :reviewId")
     Long countCommentsByReviewId(@Param("reviewId") Long reviewId);
+
+
 }
 

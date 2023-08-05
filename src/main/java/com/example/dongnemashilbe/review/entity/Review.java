@@ -2,16 +2,14 @@ package com.example.dongnemashilbe.review.entity;
 
 import com.example.dongnemashilbe.comment.entity.Comment;
 import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
+import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 
@@ -25,35 +23,23 @@ public class Review extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "road_name")
     private String roadName;
 
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String img_url;
+    @Column(nullable = false, name = "img_url")
+    private String imgUrl;
 
-    @Column
-    private String video_url;
+    @Column(nullable = false, name = "video_url")
+    private String videoUrl;
 
     @Column(nullable = false)
     private String tag;
 
-    @Column
-    private Integer likeCnt;
-
-    @Column
-    private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime modifiedAt;
-
-    @Column(nullable = false)
-    public String profileImg_url;
-
-    @Column(nullable = false)
-    public String nickname;
+    @Column(name = "profile_img_url")
+    public String profileImgUrl;
 
     @Column(nullable = false)
     public String address;
@@ -61,29 +47,35 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     public String title;
 
-    @Column
-    public Integer commentCnt;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "review")
-    private List<Like> like;
+    private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "review")
     private List<Comment> commentList = new ArrayList<>();
 
+    public Review(WriteReviewRequestDto writeReviewRequestDto, User user) {
+        this.title = writeReviewRequestDto.getTitle();
+        this.content = writeReviewRequestDto.getContent();
+        this.imgUrl = writeReviewRequestDto.getImgUrl();
+        this.videoUrl = writeReviewRequestDto.getVideoUrl();
+        this.tag = writeReviewRequestDto.getTag();
+        this.address = writeReviewRequestDto.getAddress();
+        this.roadName = writeReviewRequestDto.getRoadName();
+        this.user = user;
+
+    }
+
+
     public void update(DetailPageRequestDto detailPageRequestDto) {
         this.address = detailPageRequestDto.getAddress();
-        this.img_url = detailPageRequestDto.getImg_url();
-        this.nickname = detailPageRequestDto.getNickname();
-        this.profileImg_url = detailPageRequestDto.getProfileImg_url();
+        this.imgUrl = detailPageRequestDto.getImgUrl();
         this.tag = detailPageRequestDto.getTag();
         this.title = detailPageRequestDto.getTitle();
-        this.video_url = detailPageRequestDto.getVideo_url();
+        this.videoUrl = detailPageRequestDto.getVideoUrl();
         this.content = detailPageRequestDto.getContent();
-        this.likeCnt = detailPageRequestDto.getLikeCnt();
-        this.commentCnt = detailPageRequestDto.getCommentCnt();
     }
 }
