@@ -65,7 +65,9 @@ public class ReviewService {
 
     public WriteReviewResponseDto createReview(WriteReviewRequestDto writeReviewRequestDto, User user) {
 
-        if (writeReviewRequestDto.getVideoUrl() == null || writeReviewRequestDto.getImgUrl() == null){
+
+        if (writeReviewRequestDto.getVideoUrl() == null && writeReviewRequestDto.getImgUrl() == null){
+
             throw new CustomException(ErrorCode.ELEMENTS_IS_REQUIRED);
         }
         User usercheck = userRepository.findByNickname(user.getNickname())
