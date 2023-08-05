@@ -77,6 +77,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/reviews").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                         .requestMatchers("/api/refreshtoken").permitAll()
+                        .requestMatchers("/api/kakao").permitAll()
 
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
 
