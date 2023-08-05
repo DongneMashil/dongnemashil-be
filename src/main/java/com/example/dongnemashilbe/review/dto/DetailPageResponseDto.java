@@ -25,7 +25,6 @@ public class DetailPageResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String tag;
-    private List<CommentResponseDto> commentResponseDtoList;
 
     public DetailPageResponseDto(Review review){
         this.id=review.getId();
@@ -38,7 +37,6 @@ public class DetailPageResponseDto {
         this.createdAt=review.getCreatedAt();
         this.modifiedAt=review.getModifiedAt();
         this.tag=review.getTag();
-        this.commentResponseDtoList=review.getCommentList().stream().map(CommentResponseDto::new).toList();
     }
     public DetailPageResponseDto(Review review,Integer likeCount,Long commentCnt){
         this.id=review.getId();
@@ -53,6 +51,5 @@ public class DetailPageResponseDto {
         this.createdAt=review.getCreatedAt();
         this.modifiedAt=review.getModifiedAt();
         this.tag=review.getTag();
-        this.commentResponseDtoList=review.getCommentList().stream().map(CommentResponseDto::new).toList();
     }
 }
