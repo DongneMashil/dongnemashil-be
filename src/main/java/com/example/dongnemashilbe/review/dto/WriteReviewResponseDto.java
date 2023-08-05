@@ -12,5 +12,6 @@ public class WriteReviewResponseDto {
     public WriteReviewResponseDto(Review review) {
         this.id = review.getId();
 
+
     }
 }
