@@ -2,6 +2,7 @@ package com.example.dongnemashilbe.user.entity;
 
 
 import com.example.dongnemashilbe.review.entity.Review;
+import com.example.dongnemashilbe.review.entity.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviewList = new ArrayList<>();
+
+
 
     public User(String email, String password, String nickname, UserRoleEnum role) {
         this.email = email;

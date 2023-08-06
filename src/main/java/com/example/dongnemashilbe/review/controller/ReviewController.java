@@ -55,7 +55,6 @@ public class ReviewController {
         reviewService.deleteReview(id, userDetails);
     }
 
-
     @Transactional
     @PostMapping("/{id}/likes")
     public LikeResponseDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){

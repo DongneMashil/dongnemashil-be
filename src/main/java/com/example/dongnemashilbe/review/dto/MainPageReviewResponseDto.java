@@ -12,7 +12,6 @@ public class MainPageReviewResponseDto {
     private String roadName;
     private String imgUrl;
     private String profileImgUrl;
-    private String tag;
     private Integer likeCnt;
 
 
@@ -20,7 +19,6 @@ public class MainPageReviewResponseDto {
         this.id = review.getId();
         this.roadName = review.getRoadName();
         this.imgUrl = review.getImgUrl();
-        this.tag = review.getTag();
         this.likeCnt = likeCount;
         this.profileImgUrl = review.getProfileImgUrl();
 
