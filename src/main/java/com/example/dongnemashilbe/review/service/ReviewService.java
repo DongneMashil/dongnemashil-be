@@ -5,8 +5,12 @@ import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.review.dto.*;
 import com.example.dongnemashilbe.review.entity.Like;
 import com.example.dongnemashilbe.review.entity.Review;
+import com.example.dongnemashilbe.review.entity.Review_Tag;
+import com.example.dongnemashilbe.review.entity.Tag;
 import com.example.dongnemashilbe.review.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
+import com.example.dongnemashilbe.review.repository.Review_TagRepository;
+import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
@@ -29,7 +33,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
-
+    private final TagRepository tagRepository;
+    private final Review_TagRepository review_tagRepository;
 
     public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable) {
         List<MainPageReviewResponseDto> dtos = new ArrayList<>();
@@ -74,7 +79,23 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
         Review review = new Review(writeReviewRequestDto,usercheck);
+        review = reviewRepository.save(review);
 
+        List<String> tagName = writeReviewRequestDto.getTag();
+
+        for (String tagCategory : tagName) {
+            Optional<Tag> existingTag = tagRepository.findByName(tagCategory);
+
+            Tag tag;
+            if (existingTag.isPresent()){
+                tag = existingTag.get();
+            } else {
+                tag = new Tag(tagCategory);
+                tagRepository.save(tag);
+            }
+            Review_Tag review_tag = new Review_Tag(review,tag);
+            review_tagRepository.save(review_tag);
+        }
         return new WriteReviewResponseDto(reviewRepository.save(review));
     }
 

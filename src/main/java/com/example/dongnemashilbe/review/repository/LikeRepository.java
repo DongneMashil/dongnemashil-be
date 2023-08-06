@@ -19,4 +19,5 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     @Query("SELECT COUNT(l) FROM Like l WHERE l.review = :review")
     Integer countByReview(@Param("review") Review review);
 
+
 }

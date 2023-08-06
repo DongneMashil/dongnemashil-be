@@ -2,6 +2,8 @@ package com.example.dongnemashilbe.review.dto;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class WriteReviewRequestDto {
 
@@ -10,7 +12,8 @@ public class WriteReviewRequestDto {
     private String imgUrl;
     private String videoUrl;
     private String address;
-    private String tag;
+    private List<String> tag;
     private String roadName;
+
 
 }
