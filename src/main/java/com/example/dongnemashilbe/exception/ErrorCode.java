@@ -24,7 +24,7 @@ public enum ErrorCode {
 //    NULLABLE(HttpStatus.BAD_REQUEST.value(), "Nullable=false"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "토큰 유효기간 만료."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED.value(), "유효한 토큰이 아닙니다."),
-
+    NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED.value(),"로그인 이후에 이용이 가능합니다."),
 
     //리뷰(게시글) 리스트 // 리뷰(게시글) 작성
     OUT_OF_RANGE(HttpStatus.BAD_REQUEST.value(), "범위를 벗어난 페이지 요청입니다."),

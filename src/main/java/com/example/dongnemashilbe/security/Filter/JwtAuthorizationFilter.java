@@ -33,11 +33,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-
+    try{
         String token = jwtUtil.getTokenFromRequest(JwtUtil.ACCESSTOKEN_HEADER,req);
 
 
-        if (StringUtils.hasText(token)) {
+        if (StringUtils.hasText(token) && token != null) {
 
             String tokenValue = jwtUtil.substringToken(token);
 
@@ -53,6 +53,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 logger.error("인증오류!!!!");
             }
         }
+    }catch (Exception e){
+        req.setAttribute("exception",e);
+    }
 //        logger.error("토큰이 존재하지 않습니다.");
         logger.error(req.getRequestURI());
         filterChain.doFilter(req, res);

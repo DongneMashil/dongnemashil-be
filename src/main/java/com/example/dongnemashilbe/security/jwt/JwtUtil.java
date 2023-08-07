@@ -58,11 +58,11 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(nickname) // 사용자 식별자값(ID)
+                        .setSubject(nickname)
                         .claim(AUTHORIZATION_KEY, role)
-                        .setExpiration(new Date(date.getTime() + ACCESSTOKEN_TIME)) // 만료 시간
-                        .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .setExpiration(new Date(date.getTime() + ACCESSTOKEN_TIME))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
                         .compact();
     }
 
@@ -72,25 +72,25 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(nickname) // 사용자 식별자값(ID)
-                        .setExpiration(new Date(date.getTime() + REFRESHTOKEN_TIME)) // 만료 시간
-                        .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .setSubject(nickname)
+                        .setExpiration(new Date(date.getTime() + REFRESHTOKEN_TIME))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
                         .compact();
     }
 
     // JWT Cookie 에 저장
     public void addJwtToCookie(String header,String token, HttpServletResponse res) {
         try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
+            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
 
-            Cookie cookie = new Cookie(header, token); // Name-Value
-            cookie.setPath("/");
+            String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=840";
 
-            // Response 객체에 Cookie 추가
-            res.addCookie(cookie);
+            if(header.equals(REFRESHTOKEN_HEADER)){
+                headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=3600";
+            }
 
-
+            res.addHeader("Set-Cookie", header+"="+token+headerValue);
 
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage()+"쿠키 전달 실패");
@@ -144,6 +144,8 @@ public class JwtUtil {
                     } catch (UnsupportedEncodingException e) {
                         return null;
                     }
+                }else{
+                    throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
                 }
             }
         }
