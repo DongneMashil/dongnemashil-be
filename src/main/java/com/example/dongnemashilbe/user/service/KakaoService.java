@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,8 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-
+    @Value("${kakao.client.id}")
+    private String kakao;
 
 
     public void kakaoLogin(HttpServletResponse response, String code) throws JsonProcessingException {
@@ -46,8 +48,13 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         //4. JWT 토큰 반환
-        jwtUtil.createAccessToken(kakaoUser.getNickname(),kakaoUser.getRole());
-        jwtUtil.createRefreshToken(kakaoUser.getNickname());
+
+
+        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,
+                jwtUtil.createAccessToken(kakaoUser.getNickname(),kakaoUser.getRole()),response);
+
+        jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,
+                jwtUtil.createRefreshToken(kakaoUser.getNickname()),response);
     }
     private String getToken(String code) throws JsonProcessingException {
 
@@ -67,8 +74,8 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "d5d487556ec49229bd19bdc2a50e8ea4");
-        body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+        body.add("client_id", kakao);
+        body.add("redirect_uri", "https://dongnemashil.me/login/kakao");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
@@ -116,11 +123,10 @@ public class KakaoService {
         Long id = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
-        String email = jsonNode.get("kakao_account")
-                .get("email").asText();
 
 
-        return new KakaoUserInfoDto(id, nickname, email);
+
+        return new KakaoUserInfoDto(id, nickname);
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
