@@ -2,7 +2,6 @@ package com.example.dongnemashilbe.user.entity;
 
 
 import com.example.dongnemashilbe.review.entity.Review;
-import com.example.dongnemashilbe.review.entity.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,5 +55,10 @@ public class User {
         this.role = user;
         this.kakaoId = kakaoId;
         this.email = email;
+    }
+
+    public void uploadUser(String nickname, String S3Url) {
+        this.nickname= nickname;
+        this.profileImgUrl=S3Url;
     }
 }
