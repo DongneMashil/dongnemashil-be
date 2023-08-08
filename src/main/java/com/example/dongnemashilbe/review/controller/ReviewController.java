@@ -5,6 +5,7 @@ import com.example.dongnemashilbe.comment.dto.CommentRequestDto;
 import com.example.dongnemashilbe.review.dto.*;
 import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,15 +25,29 @@ public class ReviewController {
     public Slice<MainPageReviewResponseDto> getAllReviews(
             @RequestParam(value = "type", required = true) String type,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "12") Integer size ) {
+            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        return reviewService.findAllByType(type, pageable);
+
+        try{
+            userDetails.getUser();
+        }catch (NullPointerException e){
+            return reviewService.findAllByType(type, pageable,null);
+        }
+        return reviewService.findAllByType(type, pageable,userDetails.getUser());
     }
 
     @GetMapping("/{id}")
-    public DetailPageResponseDto getReview(@PathVariable Long id){
-        return reviewService.getReview(id);
+    public DetailPageResponseDto getReview(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        try{
+            userDetails.getUser();
+        }catch (NullPointerException e){
+
+            return reviewService.getReview(id,null);
+        }
+
+        return reviewService.getReview(id,userDetails.getUser());
     }
 
     @PostMapping("")
@@ -48,16 +63,16 @@ public class ReviewController {
            return reviewService.updateReview(id,detailPageRequestDto,userDetails);
     }
 
-    @Transactional
+
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable Long id,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails){
         reviewService.deleteReview(id, userDetails);
     }
 
-    @Transactional
+
     @PostMapping("/{id}/likes")
-    public LikeResponseDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public SuccessMessageDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return reviewService.like(id, userDetails.getUser().getNickname());
     }
 }
