@@ -86,6 +86,7 @@ public class JwtUtil {
 
             String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=840";
 
+
             if(header.equals(REFRESHTOKEN_HEADER)){
                 headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=3600";
             }
@@ -97,7 +98,7 @@ public class JwtUtil {
         }
     }
 
-    // JWT Cookie 에 저장
+    
     public void logout(String header,String token, HttpServletResponse res) {
         try {
             token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
