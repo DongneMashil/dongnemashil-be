@@ -13,7 +13,7 @@ public class MainPageReviewResponseDto {
     private String imgUrl;
     private String profileImgUrl;
     private Integer likeCnt;
-
+    private boolean likebool;
 
     public MainPageReviewResponseDto(Review review, Integer likeCount){
         this.id = review.getId();
@@ -22,5 +22,14 @@ public class MainPageReviewResponseDto {
         this.likeCnt = likeCount;
         this.profileImgUrl = review.getProfileImgUrl();
 
+    }
+
+    public MainPageReviewResponseDto(Review review, Integer likeCount, boolean likebool){
+        this.id = review.getId();
+        this.roadName = review.getRoadName();
+        this.imgUrl = review.getImgUrl();
+        this.likeCnt = likeCount;
+        this.profileImgUrl = review.getProfileImgUrl();
+        this.likebool = likebool;
     }
 }

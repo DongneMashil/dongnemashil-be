@@ -12,6 +12,7 @@ import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.review.repository.Review_TagRepository;
 import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class ReviewService {
     private final TagRepository tagRepository;
     private final Review_TagRepository review_tagRepository;
 
-    public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable) {
+    public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable,User user) {
         List<MainPageReviewResponseDto> dtos = new ArrayList<>();
         Slice<Review> reviews;
 
@@ -50,7 +51,11 @@ public class ReviewService {
 
         for (Review review : reviews) {
             Integer likeCount = likeRepository.countByReview(review);
-            dtos.add(new MainPageReviewResponseDto(review, likeCount));
+            boolean likebool = false;
+            if (user != null) {
+                likebool = likeRepository.findByUserAndReview(user, review).isPresent();
+            }
+            dtos.add(new MainPageReviewResponseDto(review, likeCount, likebool));
         }
 
         return new SliceImpl<>(dtos, pageable, reviews.hasNext());
@@ -58,12 +63,15 @@ public class ReviewService {
 
 
 
-    public DetailPageResponseDto getReview(Long id) {
+    public DetailPageResponseDto getReview(Long id,User user) {
 
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
         Integer likeCount = likeRepository.countByReview(review);
-
+        if (user != null) {
+            boolean likebool = likeRepository.findByUserAndReview(user, review).isPresent();
+            return new DetailPageResponseDto(review, likeCount, reviewRepository.countCommentsByReviewId(id),likebool);
+        }
         return new DetailPageResponseDto(review, likeCount, reviewRepository.countCommentsByReviewId(id));
     }
 
@@ -119,7 +127,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public LikeResponseDto like(Long review_id, String nickname) {
+    public SuccessMessageDto like(Long review_id, String nickname) {
         Review review = reviewRepository.findById(review_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
 
@@ -129,12 +137,12 @@ public class ReviewService {
         Optional<Like> existingLike = likeRepository.findByUserAndReview(user, review);
         if (existingLike.isPresent()) {
             likeRepository.delete(existingLike.get());
+            return new SuccessMessageDto("좋아요 취소 완료");
         } else {
-            Like newLike = new Like(user, review);
             likeRepository.save(new Like(user, review));
-            return new LikeResponseDto(newLike);
+            return new SuccessMessageDto("좋아요 완료");
         }
-        return null;
+
     }
 
     public Integer getLikeCount(Long review_id) {
