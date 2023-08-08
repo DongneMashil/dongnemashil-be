@@ -86,9 +86,24 @@ public class JwtUtil {
 
             String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=840";
 
+
             if(header.equals(REFRESHTOKEN_HEADER)){
                 headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=3600";
             }
+
+            res.addHeader("Set-Cookie", header+"="+token+headerValue);
+
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage()+"쿠키 전달 실패");
+        }
+    }
+
+    
+    public void logout(String header,String token, HttpServletResponse res) {
+        try {
+            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+
+            String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=0";
 
             res.addHeader("Set-Cookie", header+"="+token+headerValue);
 

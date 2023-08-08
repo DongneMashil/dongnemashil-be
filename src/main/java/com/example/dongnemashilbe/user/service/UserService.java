@@ -3,7 +3,10 @@ package com.example.dongnemashilbe.user.service;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.security.jwt.JwtUtil;
+import com.example.dongnemashilbe.user.dto.EmailRequestDto;
+import com.example.dongnemashilbe.user.dto.NicknameRequestDto;
 import com.example.dongnemashilbe.user.dto.SignupRequestDto;
+import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.entity.UserRoleEnum;
 import com.example.dongnemashilbe.user.repository.UserRepository;
@@ -61,5 +64,22 @@ public class UserService {
         String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
 
         jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+    }
+
+    public SuccessMessageDto checkedNickname(NicknameRequestDto nicknameRequestDto) {
+        if(userRepository.findByNickname(nicknameRequestDto.getNickname()).isPresent())
+            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+        return new SuccessMessageDto("사용가능한 닉네임 입니다.");
+    }
+
+    public SuccessMessageDto checkedEmail(EmailRequestDto emailRequestDto) {
+        if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        return new SuccessMessageDto("사용가능한 닉네임 입니다.");
+    }
+
+    public void logout( HttpServletResponse response) {
+        jwtUtil.logout(JwtUtil.ACCESSTOKEN_HEADER,"accessToken",response);
+        jwtUtil.logout(JwtUtil.REFRESHTOKEN_HEADER,"refreshToken",response);
     }
 }

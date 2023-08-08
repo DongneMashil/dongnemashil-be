@@ -72,8 +72,8 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers("/api/register").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
-                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/register","/api/register/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/login","/api/logout").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                         .requestMatchers("/api/refreshtoken").permitAll()
