@@ -10,24 +10,29 @@ import lombok.Setter;
 public class MainPageReviewResponseDto {
     private Long id;
     private String roadName;
-    private String imgUrl;
+    private String mainImgUrl;
+    private String videoUrl;
     private String profileImgUrl;
     private Integer likeCnt;
     private boolean likebool;
 
-    public MainPageReviewResponseDto(Review review, Integer likeCount){
+    public MainPageReviewResponseDto(Review review, Integer likeCount, String mainImgUrl, String videoUrl, boolean likebool){
         this.id = review.getId();
         this.roadName = review.getRoadName();
-        this.imgUrl = review.getImgUrl();
         this.likeCnt = likeCount;
         this.profileImgUrl = review.getProfileImgUrl();
+
+        this.mainImgUrl = mainImgUrl;
+        this.likebool = likebool;
+        this.videoUrl = videoUrl;
 
     }
 
     public MainPageReviewResponseDto(Review review, Integer likeCount, boolean likebool){
         this.id = review.getId();
         this.roadName = review.getRoadName();
-        this.imgUrl = review.getImgUrl();
+        this.mainImgUrl = mainImgUrl;
+        this.videoUrl = videoUrl;
         this.likeCnt = likeCount;
         this.profileImgUrl = review.getProfileImgUrl();
         this.likebool = likebool;

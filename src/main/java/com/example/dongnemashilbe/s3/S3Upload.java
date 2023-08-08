@@ -49,4 +49,10 @@ public class S3Upload {
         //그리고 getUrl 메소드를 통해서 S3에 업로드된 사진 URL을 가져오는 방식입니다.
         return amazonS3.getUrl(bucket, s3FileName).toString();
     }
+
+    public void delete(String fileUrl) {
+
+        String keyName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        amazonS3.deleteObject(bucket, keyName);
+    }
 }

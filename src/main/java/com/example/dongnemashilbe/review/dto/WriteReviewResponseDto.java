@@ -11,7 +11,7 @@ public class WriteReviewResponseDto {
     private Long id;
 
 
-    public WriteReviewResponseDto(Review review) {
-        this.id = review.getId();
+    public WriteReviewResponseDto(Long id) {
+        this.id = id;
     }
 }

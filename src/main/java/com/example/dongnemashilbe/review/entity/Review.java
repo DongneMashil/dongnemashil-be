@@ -31,12 +31,6 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false, name = "img_url")
-    private String imgUrl;
-
-    @Column(nullable = false, name = "video_url")
-    private String videoUrl;
-
     @Column(name = "profile_img_url")
     public String profileImgUrl;
 
@@ -56,16 +50,17 @@ public class Review extends Timestamped {
     @OneToMany(mappedBy = "review")
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review_Tag> review_tagList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MediaFile> mediaFiles = new ArrayList<>();
 
 
 
     public  Review(WriteReviewRequestDto writeReviewRequestDto, User user){
         this.title = writeReviewRequestDto.getTitle();
         this.content = writeReviewRequestDto.getContent();
-        this.imgUrl = writeReviewRequestDto.getImgUrl();
-        this.videoUrl = writeReviewRequestDto.getVideoUrl();
         this.address = writeReviewRequestDto.getAddress();
         this.roadName = writeReviewRequestDto.getRoadName();
         this.user=user;
@@ -73,9 +68,7 @@ public class Review extends Timestamped {
 
     public void update(DetailPageRequestDto detailPageRequestDto) {
         this.address = detailPageRequestDto.getAddress();
-        this.imgUrl = detailPageRequestDto.getImgUrl();
         this.title = detailPageRequestDto.getTitle();
-        this.videoUrl = detailPageRequestDto.getVideoUrl();
         this.content = detailPageRequestDto.getContent();
     }
 }
