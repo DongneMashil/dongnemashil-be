@@ -97,6 +97,20 @@ public class JwtUtil {
         }
     }
 
+    // JWT Cookie 에 저장
+    public void logout(String header,String token, HttpServletResponse res) {
+        try {
+            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+
+            String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=0";
+
+            res.addHeader("Set-Cookie", header+"="+token+headerValue);
+
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage()+"쿠키 전달 실패");
+        }
+    }
+
     // JWT 토큰 substring
     public String substringToken(String tokenValue) {
         //StringUtils.hasText(tokenValue) ==> 공백인지 null 인지 체크

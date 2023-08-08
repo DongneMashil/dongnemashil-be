@@ -2,9 +2,7 @@ package com.example.dongnemashilbe.user.controller;
 
 
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
-import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
-import com.example.dongnemashilbe.user.dto.UserinfoDto;
-import com.example.dongnemashilbe.user.dto.SignupRequestDto;
+import com.example.dongnemashilbe.user.dto.*;
 import com.example.dongnemashilbe.user.service.KakaoService;
 import com.example.dongnemashilbe.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,4 +54,20 @@ public class UserController {
 
     }
 
+    @PostMapping("/register/nickname")
+    public SuccessMessageDto checkedNickname(@RequestBody NicknameRequestDto nicknameRequestDto){
+        return userService.checkedNickname(nicknameRequestDto);
+    }
+
+    @PostMapping("/register/email")
+    public SuccessMessageDto checkedEmail(@RequestBody EmailRequestDto emailRequestDto){
+        return userService.checkedEmail(emailRequestDto);
+    }
+
+    @GetMapping("/logout")
+    public SuccessMessageDto logout( HttpServletResponse response){
+        userService.logout(response);
+        return new SuccessMessageDto("로그아웃이 완료되었습니다.");
+
+    }
 }
