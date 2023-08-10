@@ -36,7 +36,7 @@ public enum ErrorCode {
     UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "파일 업로드를 실패했습니다."),
     UNSUPPORTED_MEDIA_type(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "지원하지 않는 파일 형식입니다."),
 
-
+    COMMENT_NOT_EXIST(HttpStatus.NOT_FOUND.value(), "댓글 존재하지 않습니다."),
 
     CATEGORY_NOT_EXIST(HttpStatus.UNAUTHORIZED.value(), "category does not exist."),
 
