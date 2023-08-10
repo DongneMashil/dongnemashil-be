@@ -1,12 +1,10 @@
 package com.example.dongnemashilbe.user;
 
-import com.example.dongnemashilbe.config.WebSecurityConfig;
+import com.example.dongnemashilbe.global.config.WebSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @DisplayName("인증")

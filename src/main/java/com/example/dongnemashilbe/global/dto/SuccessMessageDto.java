@@ -1,4 +1,4 @@
-package com.example.dongnemashilbe.user.dto;
+package com.example.dongnemashilbe.global.dto;
 
 import lombok.Getter;
 

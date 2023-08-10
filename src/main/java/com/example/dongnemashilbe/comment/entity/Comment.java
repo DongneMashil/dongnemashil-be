@@ -2,7 +2,7 @@ package com.example.dongnemashilbe.comment.entity;
 
 import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.user.entity.User;
-import com.example.dongnemashilbe.util.Timestamped;
+import com.example.dongnemashilbe.global.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

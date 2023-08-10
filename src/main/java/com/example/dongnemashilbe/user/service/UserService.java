@@ -6,7 +6,7 @@ import com.example.dongnemashilbe.security.jwt.JwtUtil;
 import com.example.dongnemashilbe.user.dto.EmailRequestDto;
 import com.example.dongnemashilbe.user.dto.NicknameRequestDto;
 import com.example.dongnemashilbe.user.dto.SignupRequestDto;
-import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
+import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.entity.UserRoleEnum;
 import com.example.dongnemashilbe.user.repository.UserRepository;

@@ -8,7 +8,7 @@ import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
-import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
+import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

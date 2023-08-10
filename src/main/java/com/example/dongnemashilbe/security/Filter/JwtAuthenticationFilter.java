@@ -4,7 +4,7 @@ import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.security.jwt.JwtUtil;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.dto.LoginRequestDto;
-import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
+import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.UserRoleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

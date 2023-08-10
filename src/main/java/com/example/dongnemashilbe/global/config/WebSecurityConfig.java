@@ -1,4 +1,4 @@
-package com.example.dongnemashilbe.config;
+package com.example.dongnemashilbe.global.config;
 
 
 import com.example.dongnemashilbe.security.jwt.JwtAuthenticationEntryPoint;
