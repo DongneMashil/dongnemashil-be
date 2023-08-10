@@ -3,8 +3,14 @@ package com.example.dongnemashilbe.review.service;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.review.dto.*;
-import com.example.dongnemashilbe.review.entity.*;
-import com.example.dongnemashilbe.review.repository.*;
+import com.example.dongnemashilbe.review.entity.Like;
+import com.example.dongnemashilbe.review.entity.Review;
+import com.example.dongnemashilbe.review.entity.Review_Tag;
+import com.example.dongnemashilbe.review.entity.Tag;
+import com.example.dongnemashilbe.review.repository.LikeRepository;
+import com.example.dongnemashilbe.review.repository.ReviewRepository;
+import com.example.dongnemashilbe.review.repository.Review_TagRepository;
+import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
@@ -12,6 +18,7 @@ import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -36,7 +43,6 @@ public class ReviewService {
     private final LikeRepository likeRepository;
     private final TagRepository tagRepository;
     private final Review_TagRepository review_tagRepository;
-    private final MediaFileRepository mediaFileRepository;
     private final S3Upload s3Upload;
 
     public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable, User user) {
@@ -59,22 +65,9 @@ public class ReviewService {
                 likebool = likeRepository.findByUserAndReview(user, review).isPresent();
             }
 
-            String mainImgUrl = null;
-            String videoUrl = null;
+            String mainImgUrl = review.getMainImgUrl();
 
-            if (!review.getMediaFiles().isEmpty()) {
-                MediaFile mediaFile = review.getMediaFiles().get(0);
-
-                // mainImg 있을 시
-                if (mediaFile.getMainImgUrl() != null) {
-                    mainImgUrl = mediaFile.getMainImgUrl();
-                } else if (mediaFile.getVideoUrl() != null) {
-                    videoUrl = mediaFile.getVideoUrl();
-                }
-            }
-
-            dtos.add(new MainPageReviewResponseDto(review, likeCount, mainImgUrl, videoUrl, likebool));
-
+            dtos.add(new MainPageReviewResponseDto(review, likeCount, mainImgUrl, likebool));
         }
         return new SliceImpl<>(dtos, pageable, reviews.hasNext());
     }
@@ -85,15 +78,14 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
         Integer likeCount = likeRepository.countByReview(review);
 
-        MediaFile mediaFile = mediaFileRepository.findByReviewId(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.ELEMENTS_IS_REQUIRED));
-        String mainImgUrl = mediaFile.getMainImgUrl();
-        String subImgUrl = mediaFile.getSubImgUrl();
-        String videoUrl = mediaFile.getVideoUrl();
+        String mainImgUrl = review.getMainImgUrl();
+        String subImgUrl = review.getSubImgUrl();
+        String videoUrl = review.getVideoUrl();
 
         if (user != null) {
             boolean likebool = likeRepository.findByUserAndReview(user, review).isPresent();
-            return new DetailPageResponseDto(review, likeCount, reviewRepository.countCommentsByReviewId(id), mainImgUrl, subImgUrl, videoUrl,likebool);
+            return new DetailPageResponseDto(review, likeCount, reviewRepository.countCommentsByReviewId(id)
+                    , mainImgUrl, subImgUrl, videoUrl,likebool);
         }
 
         return new DetailPageResponseDto(review, likeCount, reviewRepository.countCommentsByReviewId(id),
@@ -105,10 +97,14 @@ public class ReviewService {
                                                MultipartFile mainImgFile, List<MultipartFile> subImgUrl,
                                                MultipartFile videoFile) throws IOException {
 
-        if ((mainImgFile == null || mainImgFile.isEmpty()) && (videoFile == null || videoFile.isEmpty())) {
+        if ((mainImgFile == null || mainImgFile.isEmpty())) {
             throw new CustomException(ErrorCode.ELEMENTS_IS_REQUIRED);
 
         }
+
+        User usercheck = userRepository.findByNickname(user.getNickname())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
         List<String> allowedVideoExtensions = Arrays.asList("mp4");
 
@@ -154,6 +150,8 @@ public class ReviewService {
                 subImageUrlsList.add(imageUrl);
             }
         }
+        // subImageUrlsList를 쉼표로 구분된 문자열로 변환
+        String subImageUrlsString = String.join(",", subImageUrlsList);
 
         // 동영상 파일 처리
         String videoUrl = null;
@@ -161,20 +159,10 @@ public class ReviewService {
             videoUrl = s3Upload.upload(videoFile);
         }
 
-        User usercheck = userRepository.findByNickname(user.getNickname())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
         // 리뷰 등록
-        Review review = new Review(writeReviewRequestDto, usercheck);
+        Review review = new Review(writeReviewRequestDto, user, mainImgUrl, subImageUrlsString, videoUrl);
         review = reviewRepository.save(review);
-
-        // subImageUrlsList를 쉼표로 구분된 문자열로 변환
-        String subImageUrlsString = String.join(",", subImageUrlsList);
-
-        // 미디어 파일 생성 및 저장
-        MediaFile mediaFile = new MediaFile(mainImgUrl, subImageUrlsString, videoUrl, review);
-
-        mediaFileRepository.save(mediaFile);
 
 
         // 태그 등록
@@ -201,15 +189,18 @@ public class ReviewService {
                                                DetailPageRequestDto detailPageRequestDto,
                                                MultipartFile mainImgFile, List<MultipartFile> subImgUrl,
                                                MultipartFile videoFile, UserDetailsImpl userDetails) throws IOException {
+
         Review review = findReviewById(id);
         validate(review, userDetails);
-        review.update(detailPageRequestDto);
+//        review.update(detailPageRequestDto,userDetails.getUser());
+
         // 이미지 영상 타입 체크
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
         List<String> allowedVideoExtensions = Arrays.asList("mp4");
 
         if (mainImgFile != null) {
-            String mainImgExtension = mainImgFile.getOriginalFilename().substring(mainImgFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+            String mainImgExtension = mainImgFile.getOriginalFilename()
+                    .substring(mainImgFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
             if (!allowedImageExtensions.contains(mainImgExtension)) {
                 throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_type);
 
@@ -217,7 +208,8 @@ public class ReviewService {
         }
         // 동영상 파일 검사
         if (videoFile != null) {
-            String videoExtension = videoFile.getOriginalFilename().substring(videoFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+            String videoExtension = videoFile.getOriginalFilename()
+                    .substring(videoFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
             if (!allowedVideoExtensions.contains(videoExtension)) {
                 throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_type);
             }
@@ -226,7 +218,8 @@ public class ReviewService {
         // 서브 이미지 파일 검사
         if (subImgUrl != null && !subImgUrl.isEmpty()) {
             for (MultipartFile file : subImgUrl) {
-                String subImgExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+                String subImgExtension = file.getOriginalFilename()
+                        .substring(file.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
                 if (!allowedImageExtensions.contains(subImgExtension)) {
                     throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_type);
                 }
@@ -252,14 +245,12 @@ public class ReviewService {
             videoUrl = s3Upload.upload(videoFile);
         }
 
-        // 리뷰 업데이트
-        review.update(detailPageRequestDto);
-
         // 미디어 파일 디비 업데이트
-        MediaFile mediaFile = mediaFileRepository.findByReview(review)
-                .orElse(new MediaFile(mainImgUrl, subImageUrlsString, videoUrl, review));
-        mediaFile.update(mainImgUrl, subImageUrlsString, videoUrl);
-        mediaFileRepository.save(mediaFile);
+        Review mediaFile = reviewRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
+
+        review.update(detailPageRequestDto, userDetails.getUser(), mainImgUrl, subImageUrlsString, videoUrl);
+
 
         // 태그 업데이트
         List<String> tagName = detailPageRequestDto.getTag();
@@ -286,24 +277,32 @@ public class ReviewService {
         Review review = findReviewById(id);
         validate(review, userDetails);
 
-        MediaFile mediaFile = mediaFileRepository.findByReview(review)
-                .orElseThrow(() -> new CustomException(ErrorCode.ELEMENTS_IS_REQUIRED));
-        if (mediaFile.getMainImgUrl() != null) {
-            s3Upload.delete(mediaFile.getMainImgUrl());
+        if (s3Upload == null) {
+            throw new CustomException(ErrorCode.OUT_OF_RANGE);
         }
-        if (mediaFile.getVideoUrl() != null) {
-            s3Upload.delete(mediaFile.getVideoUrl());
-        }
-        if (mediaFile.getSubImgUrl() != null) {
-            for (String subImgUrl : mediaFile.getSubImgUrl().split(",")) {
-                s3Upload.delete(subImgUrl);
+        try {
+            if (review.getMainImgUrl() != null) {
+                s3Upload.delete(review.getMainImgUrl());
             }
-        }
+            if (review.getVideoUrl() != null) {
+                s3Upload.delete(review.getVideoUrl());
+            }
+            if (review.getSubImgUrl() != null) {
+                for (String subImgUrl : review.getSubImgUrl().split(",")) {
+                    if (subImgUrl != null && !subImgUrl.isEmpty()) {
+                        s3Upload.delete(review.getSubImgUrl());
+                    }
+                }
+            }
+        } catch (Exception e) {
 
-        mediaFileRepository.delete(mediaFile);
+            throw new CustomException(ErrorCode.OUT_OF_RANGE);
+        }
 
         reviewRepository.delete(review);
     }
+
+
 
     @Transactional
     public SuccessMessageDto like(Long review_id, String nickname) {
@@ -344,7 +343,9 @@ public class ReviewService {
             }
         }
     }
-
+    private String getKeyFromUrl(String fileUrl) {
+        return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+    }
 
 }
 

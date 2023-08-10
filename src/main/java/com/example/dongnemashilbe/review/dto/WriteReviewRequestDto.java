@@ -9,12 +9,7 @@ public class WriteReviewRequestDto {
 
     private String title;
     private String content;
-    private String mainImgUrl;
-    private List<String> subImgUrl;
-    private String videoUrl;
     private String address;
     private List<String> tag;
     private String roadName;
-
-
 }

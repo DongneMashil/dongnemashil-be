@@ -3,7 +3,6 @@ package com.example.dongnemashilbe.review.entity;
 import com.example.dongnemashilbe.comment.entity.Comment;
 import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
 import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
-import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.util.Timestamped;
 import jakarta.persistence.*;
@@ -40,6 +39,15 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     public String title;
 
+    @Column
+    private String mainImgUrl;
+
+    @Column(length = 10000)
+    private String subImgUrl;
+
+    @Column
+    private String videoUrl;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -53,22 +61,26 @@ public class Review extends Timestamped {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review_Tag> review_tagList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MediaFile> mediaFiles = new ArrayList<>();
-
-
-
-    public  Review(WriteReviewRequestDto writeReviewRequestDto, User user){
+    public Review(WriteReviewRequestDto writeReviewRequestDto, User user, String mainImgUrl, String subImgUrl, String videoUrl) {
         this.title = writeReviewRequestDto.getTitle();
         this.content = writeReviewRequestDto.getContent();
         this.address = writeReviewRequestDto.getAddress();
         this.roadName = writeReviewRequestDto.getRoadName();
-        this.user=user;
+        this.videoUrl = videoUrl;
+        this.mainImgUrl = mainImgUrl;
+        this.subImgUrl = subImgUrl;
+        this.user = user;
     }
 
-    public void update(DetailPageRequestDto detailPageRequestDto) {
+
+
+    public void update(DetailPageRequestDto detailPageRequestDto,User user,String mainImgUrl, String subImageUrlsString, String videoUrl) {
         this.address = detailPageRequestDto.getAddress();
         this.title = detailPageRequestDto.getTitle();
         this.content = detailPageRequestDto.getContent();
+        this.videoUrl = videoUrl;
+        this.mainImgUrl = mainImgUrl;
+        this.subImgUrl = subImageUrlsString;
+        this.user = user;
     }
 }
