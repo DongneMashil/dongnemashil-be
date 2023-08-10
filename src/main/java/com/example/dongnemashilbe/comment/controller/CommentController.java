@@ -18,17 +18,31 @@ public class CommentController {
     private final CommentService commentService;
 
 
-    @GetMapping("/reviews/{review_id}/comment")
+    @GetMapping("/reviews/{review_id}/comments")
     public Slice<CommentResponseDto> getCommentList(@PathVariable Long review_id,
                                                     @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                     @RequestParam(value = "size", defaultValue = "20") Integer size ){
         return commentService.getCommentList(review_id,page,size);
     }
 
-    @PostMapping("/reviews/{review_id}/comment")
+    @PostMapping("/reviews/{review_id}/comments")
     public SuccessMessageDto writeComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                           @RequestBody CommentRequestDto commentRequestDto ,
                                           @PathVariable Long review_id){
         return commentService.writeComment(review_id ,userDetails.getUser() , commentRequestDto);
+    }
+
+
+    @PutMapping("/comments/{comment_id}")
+    public SuccessMessageDto updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                           @RequestBody CommentRequestDto commentRequestDto,
+                                           @PathVariable Long comment_id){
+        return commentService.updateComment(userDetails.getUser(),commentRequestDto,comment_id);
+    }
+
+    @DeleteMapping("/comments/{comment_id}")
+    public SuccessMessageDto deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                           @PathVariable Long comment_id){
+        return commentService.deleteComment(userDetails.getUser(),comment_id);
     }
 }

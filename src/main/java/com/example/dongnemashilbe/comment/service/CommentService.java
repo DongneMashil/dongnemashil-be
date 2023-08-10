@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +40,26 @@ public class CommentService {
         return new SuccessMessageDto("댓글 작성이 완료되었습니다.");
     }
 
+    @Transactional
+    public SuccessMessageDto updateComment(User user, CommentRequestDto commentRequestDto, Long comment_id) {
+     Comment comment = commentRepository.findById(comment_id).orElseThrow(
+             ()-> new CustomException(ErrorCode.COMMENT_NOT_EXIST));
+     if(!user.getNickname().equals(comment.getUser().getNickname())){
+         throw new CustomException(ErrorCode.NOT_THE_AUTHOR);
+     }
+     comment.update(commentRequestDto.getComment());
 
+        return new SuccessMessageDto("댓글 수정이 완료되었습니다.");
+    }
+
+    public SuccessMessageDto deleteComment(User user, Long comment_id) {
+        Comment comment = commentRepository.findById(comment_id).orElseThrow(
+                ()-> new CustomException(ErrorCode.COMMENT_NOT_EXIST));
+        if(!user.getNickname().equals(comment.getUser().getNickname())){
+            throw new CustomException(ErrorCode.NOT_THE_AUTHOR);
+        }
+        commentRepository.delete(comment);
+
+        return new SuccessMessageDto("댓글 삭제가 완료되었습니다.");
+    }
 }
