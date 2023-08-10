@@ -4,7 +4,7 @@ import com.example.dongnemashilbe.comment.entity.Comment;
 import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
 import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.user.entity.User;
-import com.example.dongnemashilbe.util.Timestamped;
+import com.example.dongnemashilbe.global.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,7 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     public String title;
 
-    @Column
+    @Column(length = 1000)
     private String mainImgUrl;
 
     @Column(length = 10000)
