@@ -1,18 +1,27 @@
 package com.example.dongnemashilbe.user.service;
 
+import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
+import com.example.dongnemashilbe.comment.repository.CommentRepository;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
+import com.example.dongnemashilbe.review.repository.LikeRepository;
+import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
+import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageResponseDto;
-import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
+import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,27 +29,46 @@ public class MypageService {
 
     private final UserRepository userRepository;
     private final S3Upload s3Upload;
+    private final LikeRepository likeRepository;
+    private final ReviewRepository reviewRepository;
+    private final CommentRepository commentRepository;
 
-
-//    String url = s3Upload.upload(file);
 
     public MyPageResponseDto getUserInfo(User user) {
-        System.out.println("user.getId() = " + user.getId());
-        User user1 = userRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-        return new MyPageResponseDto(user1);
+        return new MyPageResponseDto(user);
     }
 
 
     @Transactional
     public SuccessMessageDto modifyUserInfo(Long id, String nickname, MultipartFile file) throws IOException {
-       if (!userRepository.findByNickname(nickname).isEmpty())
-           throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
-       String S3Url = s3Upload.upload(file);
 
        User user = userRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
+
+       s3Upload.delete(user.getProfileImgUrl());
+       String S3Url = s3Upload.upload(file);
+
        user.uploadUser(nickname,S3Url);
 
 
         return new SuccessMessageDto("회원정보 수정이 완료 되었습니다.");
+    }
+
+    @Transactional
+    public Slice<MyPageListResponseDto> getMyList(Integer page , Long userId, String q) {
+        Pageable pageable = PageRequest.of(page - 1, 4);
+
+
+        if (q.equals("likes")) {
+           return likeRepository.findAllByUser_Id(userId,pageable).map(MyPageListResponseDto::new);
+        }
+
+        return reviewRepository.findAllByUser_Id(userId,pageable).map(MyPageListResponseDto::new);
+
+    }
+
+    public Slice<CommentResponseDto> getMyCommentList(Long id, Integer page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+
+        return commentRepository.findAllByUser_Id(id,pageable).map(CommentResponseDto::new);
     }
 }

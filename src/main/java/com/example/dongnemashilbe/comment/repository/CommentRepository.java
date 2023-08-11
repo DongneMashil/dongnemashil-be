@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     Slice<Comment> findAllByReviewId(Long review_id, Pageable pageable);
+    Slice<Comment> findAllByUser_Id(Long user_id, Pageable pageable);
 }

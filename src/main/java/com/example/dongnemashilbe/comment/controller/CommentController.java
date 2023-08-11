@@ -4,7 +4,7 @@ import com.example.dongnemashilbe.comment.dto.CommentRequestDto;
 import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
 import com.example.dongnemashilbe.comment.service.CommentService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
-import com.example.dongnemashilbe.user.dto.SuccessMessageDto;
+import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

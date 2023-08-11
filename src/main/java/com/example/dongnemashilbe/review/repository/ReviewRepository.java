@@ -30,5 +30,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT rt.review FROM Review_Tag rt WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY rt.review.createdAt DESC")
     Slice<Review> findAllByRecentAndTags(Pageable pageable, @Param("tags") List<String> tags);
 
+
+    Slice<Review> findAllByUser_Id(Long userId, Pageable pageable);
+
 }
 

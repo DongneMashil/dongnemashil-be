@@ -1,6 +1,7 @@
 package com.example.dongnemashilbe.user.controller;
 
 
+import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.dto.*;
 import com.example.dongnemashilbe.user.service.KakaoService;
