@@ -4,6 +4,7 @@ package com.example.dongnemashilbe.review.controller;
 import com.example.dongnemashilbe.review.dto.*;
 import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,22 +24,21 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-
     @GetMapping("")
     public Slice<MainPageReviewResponseDto> getAllReviews(
-            @RequestParam(value = "type", required = true) String type,
+            @RequestParam(value = "type", defaultValue = "likes") String type,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "size", defaultValue = "12") Integer size,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-
         try{
             userDetails.getUser();
         }catch (NullPointerException e){
-            return reviewService.findAllByType(type, pageable,null);
+            return reviewService.findAllByType(type, pageable,tag,null);
         }
-        return reviewService.findAllByType(type, pageable,userDetails.getUser());
+        return reviewService.findAllByType(type, pageable,tag,userDetails.getUser());
     }
 
     @GetMapping("/{id}")
