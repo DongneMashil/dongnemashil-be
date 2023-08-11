@@ -17,7 +17,7 @@ public class TimeMeasurementAop {
     private static final Logger logger = LoggerFactory.getLogger(TimeMeasurementAop.class);
 
     // 조인포인트를 어노테이션으로 설정
-    @Pointcut("@annotation(com.example.cicdtest.aop.ExeTimer)")
+    @Pointcut("@annotation(com.example.dongnemashilbe.aop.ExeTimer)")
     private void timer(){};
 
     // 메서드 실행 전,후로 시간을 공유해야 하기 때문

@@ -30,9 +30,6 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "profile_img_url")
-    public String profileImgUrl;
-
     @Column(nullable = false)
     public String address;
 
@@ -52,10 +49,10 @@ public class Review extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)

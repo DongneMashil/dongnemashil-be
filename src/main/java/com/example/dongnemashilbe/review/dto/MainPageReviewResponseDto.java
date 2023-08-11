@@ -19,8 +19,7 @@ public class MainPageReviewResponseDto {
         this.id = review.getId();
         this.roadName = review.getRoadName();
         this.likeCnt = likeCount;
-        this.profileImgUrl = review.getProfileImgUrl();
-
+        this.profileImgUrl = review.getUser().getProfileImgUrl();
         this.mainImgUrl = mainImgUrl;
         this.likebool = likebool;
 
