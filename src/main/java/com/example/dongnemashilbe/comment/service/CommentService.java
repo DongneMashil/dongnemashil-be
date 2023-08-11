@@ -11,9 +11,9 @@ import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
 
-    public Slice<CommentResponseDto> getCommentList(Long review_id, Integer page, Integer size) {
+    public Page<CommentResponseDto> getCommentList(Long review_id, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         return commentRepository.findAllByReviewId(review_id,pageable).map(CommentResponseDto::new);
