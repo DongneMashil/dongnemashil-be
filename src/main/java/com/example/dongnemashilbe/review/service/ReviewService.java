@@ -45,14 +45,25 @@ public class ReviewService {
     private final Review_TagRepository review_tagRepository;
     private final S3Upload s3Upload;
 
-    public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable, User user) {
+    public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable,String tag,User user) {
+        List<String> tags = null;
+        if (tag != null){
+            tags = Arrays.asList(tag.split(","));
+        }
         List<MainPageReviewResponseDto> dtos = new ArrayList<>();
         Slice<Review> reviews;
-
         if ("likes".equals(type)) {
-            reviews = reviewRepository.findAllByLikes(pageable);
+            if (tags != null) {
+                reviews = reviewRepository.findAllByLikesAndTags(pageable, tags);
+            } else {
+                reviews = reviewRepository.findAllByLikes(pageable);
+            }
         } else if ("recent".equals(type)) {
-            reviews = reviewRepository.findAllByRecent(pageable);
+            if (tags != null) {
+                reviews = reviewRepository.findAllByRecentAndTags(pageable, tags);
+            } else {
+                reviews = reviewRepository.findAllByRecent(pageable);
+            }
         } else {
             throw new CustomException(ErrorCode.OUT_OF_RANGE);
         }
@@ -346,6 +357,7 @@ public class ReviewService {
     private String getKeyFromUrl(String fileUrl) {
         return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
     }
+
 
 }
 

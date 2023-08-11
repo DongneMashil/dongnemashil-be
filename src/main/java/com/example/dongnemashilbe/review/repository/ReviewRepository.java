@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
+
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
@@ -23,7 +24,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT COUNT(c) from Comment c where c.review.id = :reviewId")
     Long countCommentsByReviewId(@Param("reviewId") Long reviewId);
 
+    @Query("SELECT rt.review FROM Review_Tag rt WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY SIZE(rt.review.likes) DESC, rt.review.id DESC")
+    Slice<Review> findAllByLikesAndTags(Pageable pageable, @Param("tags") List<String> tags);
 
-    Optional<Review>findById(Long id);
+    @Query("SELECT rt.review FROM Review_Tag rt WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY rt.review.createdAt DESC")
+    Slice<Review> findAllByRecentAndTags(Pageable pageable, @Param("tags") List<String> tags);
+
 }
 
