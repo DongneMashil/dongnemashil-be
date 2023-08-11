@@ -6,7 +6,7 @@ import com.example.dongnemashilbe.comment.service.CommentService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,9 @@ public class CommentController {
 
 
     @GetMapping("/reviews/{review_id}/comments")
-    public Slice<CommentResponseDto> getCommentList(@PathVariable Long review_id,
-                                                    @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                    @RequestParam(value = "size", defaultValue = "20") Integer size ){
+    public Page<CommentResponseDto> getCommentList(@PathVariable Long review_id,
+                                                   @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                   @RequestParam(value = "size", defaultValue = "20") Integer size ){
         return commentService.getCommentList(review_id,page,size);
     }
 
