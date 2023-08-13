@@ -39,7 +39,7 @@ public class MyPageController {
 
     @GetMapping("/list")
     public Slice<MyPageListResponseDto> getMyList(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                  @RequestParam Integer page,
+                                                  @RequestParam(value = "page", defaultValue = "1")  Integer page,
                                                   @RequestParam String q){
         return mypageService.getMyList(page,userDetails.getUser().getId(),q);
 

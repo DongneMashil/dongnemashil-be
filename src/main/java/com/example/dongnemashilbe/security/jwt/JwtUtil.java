@@ -159,10 +159,9 @@ public class JwtUtil {
                     } catch (UnsupportedEncodingException e) {
                         return null;
                     }
-                }else{
-                    throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
                 }
             }
+            throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
         }
         return null;
     }

@@ -13,6 +13,7 @@ public class DetailPageResponseDto {
 
     private Long id;
     private String content;
+    private String nickname;
     private String profileImgUrl;
     private String address;
     private String title;
@@ -31,6 +32,7 @@ public class DetailPageResponseDto {
                                  String mainImgUrl, String subImgUrl, String videoUrl){
         this.id=review.getId();
         this.content=review.getContent();
+        this.nickname=review.getUser().getNickname();
         this.profileImgUrl=review.getUser().getProfileImgUrl();
         this.address=review.getAddress();
         this.title=review.getTitle();
@@ -53,6 +55,7 @@ public class DetailPageResponseDto {
                                  String mainImgUrl, String subImgUrl,String videoUrl, boolean likebool){
         this.id=review.getId();
         this.content=review.getContent();
+        this.nickname=review.getUser().getNickname();
         this.profileImgUrl=review.getUser().getProfileImgUrl();
         this.address=review.getAddress();
         this.title=review.getTitle();

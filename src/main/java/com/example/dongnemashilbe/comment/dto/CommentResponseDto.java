@@ -13,7 +13,7 @@ public class CommentResponseDto {
     private String profileImgUrl;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private Long reveiwId;
+    private Long reviewId;
 
 
     public CommentResponseDto(Comment comment) {
@@ -23,6 +23,6 @@ public class CommentResponseDto {
         this.profileImgUrl = comment.getUser().getProfileImgUrl();
         this.createdAt=comment.getCreatedAt();
         this.modifiedAt=comment.getModifiedAt();
-        this.reveiwId=comment.getReview().getId();
+        this.reviewId=comment.getReview().getId();
     }
 }
