@@ -73,10 +73,11 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers("/api/register","/api/register/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
-                        .requestMatchers("/api/login","/api/logout").permitAll()
+                        .requestMatchers("/api/login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                         .requestMatchers("/api/refreshtoken").permitAll()
+                        .requestMatchers("/api/search").permitAll()
                         .requestMatchers("/api/kakao","/api/kakao?code=").permitAll()
                         .requestMatchers("/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**","/swagger-ui.html").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
@@ -96,6 +97,7 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:3000/");
         config.addAllowedOrigin("https://dongnemashil.me/");
         config.addAllowedOrigin("https://flatland.shop/");
         config.addAllowedMethod("GET");

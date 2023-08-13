@@ -44,7 +44,8 @@ public class MypageService {
 
        User user = userRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
 
-       s3Upload.delete(user.getProfileImgUrl());
+        if(user.getProfileImgUrl() != null)
+            s3Upload.delete(user.getProfileImgUrl());
        String S3Url = s3Upload.upload(file);
 
        user.uploadUser(nickname,S3Url);
@@ -55,7 +56,7 @@ public class MypageService {
 
     @Transactional
     public Slice<MyPageListResponseDto> getMyList(Integer page , Long userId, String q) {
-        Pageable pageable = PageRequest.of(page - 1, 4);
+        Pageable pageable = PageRequest.of(page - 1, 8);
 
 
         if (q.equals("likes")) {
@@ -67,7 +68,7 @@ public class MypageService {
     }
 
     public Slice<CommentResponseDto> getMyCommentList(Long id, Integer page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 16);
 
         return commentRepository.findAllByUser_Id(id,pageable).map(CommentResponseDto::new);
     }
