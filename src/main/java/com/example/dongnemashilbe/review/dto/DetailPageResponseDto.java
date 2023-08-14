@@ -16,6 +16,7 @@ public class DetailPageResponseDto {
     private String nickname;
     private String profileImgUrl;
     private String address;
+    private String roadName;
     private String title;
     private String mainImgUrl;
     private List<String> subImgUrl = new ArrayList<>();
@@ -35,6 +36,7 @@ public class DetailPageResponseDto {
         this.nickname=review.getUser().getNickname();
         this.profileImgUrl=review.getUser().getProfileImgUrl();
         this.address=review.getAddress();
+        this.roadName=review.getRoadName();
         this.title=review.getTitle();
         this.likeCnt=likeCount;
         this.commentCnt= Math.toIntExact(commentCnt);
