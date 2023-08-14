@@ -1,10 +1,9 @@
 package com.example.dongnemashilbe.s3;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,5 +56,18 @@ public class S3Upload {
         fileUrl = URLDecoder.decode(fileUrl, "UTF-8");
         String keyName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         amazonS3.deleteObject(bucket, keyName);
+    }
+
+    public void deleteExistingFile(String fileUrl){
+
+        try {
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileUrl));
+        } catch (AmazonServiceException e) {
+            // Amazon S3에서 오류를 반환할 때 발생
+            e.printStackTrace();
+        } catch (SdkClientException e) {
+            // Amazon S3에 요청을 보낼 수 없거나 응답을 해석할 수 없을 때 발생
+            e.printStackTrace();
+        }
     }
 }
