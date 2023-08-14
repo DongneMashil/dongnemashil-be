@@ -3,17 +3,15 @@ package com.example.dongnemashilbe.review.service;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.review.dto.*;
-import com.example.dongnemashilbe.review.entity.Like;
 import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.review.entity.Review_Tag;
 import com.example.dongnemashilbe.review.entity.Tag;
-import com.example.dongnemashilbe.review.repository.LikeRepository;
+import com.example.dongnemashilbe.like.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.review.repository.Review_TagRepository;
 import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
-import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -84,9 +82,9 @@ public class ReviewService {
 
     public DetailPageResponseDto getReview(Long id, User user) {
 
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
-        Integer likeCount = likeRepository.countByReview(review);
+        Review review = findReviewById(id);
+
+        Integer likeCount = reviewRepository.countLikesForReviewId(id);
 
         String mainImgUrl = review.getMainImgUrl();
         String subImgUrl = review.getSubImgUrl();
@@ -111,9 +109,6 @@ public class ReviewService {
             throw new CustomException(ErrorCode.ELEMENTS_IS_REQUIRED);
 
         }
-
-        User usercheck = userRepository.findByNickname(user.getNickname())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
         List<String> allowedVideoExtensions = Arrays.asList("mp4");
@@ -202,7 +197,7 @@ public class ReviewService {
 
         Review review = findReviewById(id);
         validate(review, userDetails);
-//        review.update(detailPageRequestDto,userDetails.getUser());
+
 
         // 이미지 영상 타입 체크
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
@@ -312,34 +307,6 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-
-
-    @Transactional
-    public SuccessMessageDto like(Long review_id, String nickname) {
-        Review review = reviewRepository.findById(review_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
-
-        User user = userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-        Optional<Like> existingLike = likeRepository.findByUserAndReview(user, review);
-        if (existingLike.isPresent()) {
-            likeRepository.delete(existingLike.get());
-            return new SuccessMessageDto("좋아요 취소 완료");
-        } else {
-            likeRepository.save(new Like(user, review));
-            return new SuccessMessageDto("좋아요 완료");
-        }
-
-    }
-
-    public Integer getLikeCount(Long review_id) {
-        Review review = reviewRepository.findById(review_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
-        return likeRepository.countByReview(review);
-    }
-
-
     private Review findReviewById(Long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
@@ -353,11 +320,6 @@ public class ReviewService {
             }
         }
     }
-    private String getKeyFromUrl(String fileUrl) {
-        return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-    }
-
-
 }
 
 

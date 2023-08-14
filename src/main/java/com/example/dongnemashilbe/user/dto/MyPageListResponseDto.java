@@ -1,6 +1,6 @@
 package com.example.dongnemashilbe.user.dto;
 
-import com.example.dongnemashilbe.review.entity.Like;
+import com.example.dongnemashilbe.like.entity.Like;
 import com.example.dongnemashilbe.review.entity.Review;
 import lombok.Getter;
 

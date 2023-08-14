@@ -4,7 +4,7 @@ import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
 import com.example.dongnemashilbe.comment.repository.CommentRepository;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
-import com.example.dongnemashilbe.review.repository.LikeRepository;
+import com.example.dongnemashilbe.like.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;

@@ -79,10 +79,5 @@ public class ReviewController {
         reviewService.deleteReview(id, userDetails);
     }
 
-
-    @PostMapping("/{id}/likes")
-    public SuccessMessageDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return reviewService.like(id, userDetails.getUser().getNickname());
-    }
 }
 

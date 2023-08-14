@@ -1,6 +1,7 @@
 package com.example.dongnemashilbe.review.entity;
 
 import com.example.dongnemashilbe.comment.entity.Comment;
+import com.example.dongnemashilbe.like.entity.Like;
 import com.example.dongnemashilbe.review.dto.DetailPageRequestDto;
 import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.user.entity.User;
