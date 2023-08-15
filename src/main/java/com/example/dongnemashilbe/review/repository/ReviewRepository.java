@@ -1,6 +1,5 @@
 package com.example.dongnemashilbe.review.repository;
 
-import com.example.dongnemashilbe.comment.entity.Comment;
 import com.example.dongnemashilbe.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,7 +70,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Slice<Review> findAllByRecentAndTags(Pageable pageable, @Param("tags") List<String> tags);
 
     // 유저가 작성한 리뷰 조회
-    Slice<Review> findAllByUser_Id(Long userId, Pageable pageable);
+    Page<Review> findAllByUser_Id(Long userId, Pageable pageable);
 
 }
 

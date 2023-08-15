@@ -13,9 +13,9 @@ import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +46,7 @@ public class MypageService {
 
         if(user.getProfileImgUrl() != null)
             s3Upload.delete(user.getProfileImgUrl());
-       String S3Url = s3Upload.upload(file);
+        String S3Url = s3Upload.upload(file);
 
        user.uploadUser(nickname,S3Url);
 
@@ -55,7 +55,7 @@ public class MypageService {
     }
 
     @Transactional
-    public Slice<MyPageListResponseDto> getMyList(Integer page , Long userId, String q) {
+    public Page<MyPageListResponseDto> getMyList(Integer page , Long userId, String q) {
         Pageable pageable = PageRequest.of(page - 1, 8);
 
 
@@ -67,7 +67,7 @@ public class MypageService {
 
     }
 
-    public Slice<CommentResponseDto> getMyCommentList(Long id, Integer page) {
+    public Page<CommentResponseDto> getMyCommentList(Long id, Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 16);
 
         return commentRepository.findAllByUser_Id(id,pageable).map(CommentResponseDto::new);
