@@ -6,6 +6,7 @@ import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -62,12 +63,12 @@ public class ReviewController {
         return reviewService.createReview(writeReviewRequestDto, userDetails.getUser(),mainImgUrl,subImgUrl,videoFIle);
     }
 
-    @PutMapping("/{id}")
-    public WriteReviewResponseDto updateReview(@PathVariable Long id,
-                                               @RequestPart (value = "data") DetailPageRequestDto detailPageRequestDto,
+    @PutMapping(value = "/{id}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public WriteReviewResponseDto updateReview(@RequestPart (value = "data") DetailPageRequestDto detailPageRequestDto,
                                                @RequestPart (name = "mainImgUrl",required = false) MultipartFile mainImgUrl,
                                                @RequestPart (name = "subImgUrl",required = false) List<MultipartFile> subImgUrl,
                                                @RequestPart (name = "videoUrl",required = false) MultipartFile videoUrl,
+                                               @PathVariable Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return reviewService.updateReview(id,detailPageRequestDto,mainImgUrl,subImgUrl,videoUrl,userDetails);
     }
@@ -79,10 +80,5 @@ public class ReviewController {
         reviewService.deleteReview(id, userDetails);
     }
 
-
-    @PostMapping("/{id}/likes")
-    public SuccessMessageDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return reviewService.like(id, userDetails.getUser().getNickname());
-    }
 }
 

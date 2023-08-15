@@ -15,6 +15,10 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+    //좋아요 카운트
+    @Query("SELECT COUNT(l) FROM Like l WHERE l.review.id = :reviewId")
+    Integer countLikesForReviewId(@Param("reviewId") Long reviewId);
+
     // 좋아요 순으로 조회
     @Query("SELECT r FROM Review r ORDER BY SIZE(r.likes) DESC, r.id DESC")
     Slice<Review> findAllByLikes(Pageable pageable);
@@ -24,8 +28,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByLikesAndAddressContaining(Pageable pageable, @Param("address") String address);
 
     //태그와 주소를 좋아요 순으로 조회
-//    @Query("SELECT DISTINCT r FROM Review r JOIN r.review_tagList t WHERE r.address LIKE %:address% AND t.tag.name IN :tagNames ORDER BY SIZE(r.likes) DESC")
-//    Page<Review> findAllByLikesAndTagAndAddressContaining(Pageable pageable,@Param("tagNames") List<String> tagNames,@Param("address") String address);
     @Query("SELECT DISTINCT r FROM Review r " +
             "JOIN r.review_tagList t " +
             "WHERE r.address LIKE %:address% " +

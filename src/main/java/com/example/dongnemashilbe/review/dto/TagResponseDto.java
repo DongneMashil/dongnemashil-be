@@ -4,12 +4,12 @@ import com.example.dongnemashilbe.review.entity.Tag;
 import lombok.Getter;
 
 @Getter
-public class TagResponseDTO {
+public class TagResponseDto {
 
     private Long id;
     private String name;
 
-    public TagResponseDTO(Tag tag){
+    public TagResponseDto(Tag tag){
         this.id = tag.getId();
         this.name = tag.getName();
     }

@@ -30,7 +30,6 @@ public enum ErrorCode {
     OUT_OF_RANGE(HttpStatus.BAD_REQUEST.value(), "범위를 벗어난 페이지 요청입니다."),
     REVIEW_NOT_EXIST(HttpStatus.NOT_FOUND.value(), "리뷰가 존재하지 않습니다."),
     TOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED.value(), "로그인이 필요한 기능입니다."),
-    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "지정한 미디어 타입이 아닙니다."),
     NOT_THE_AUTHOR(HttpStatus.FORBIDDEN.value(), "작성자가 아닙니다."),
     ELEMENTS_IS_REQUIRED(HttpStatus.BAD_REQUEST.value(), "필수값이 생략되었습니다."),
     UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "파일 업로드를 실패했습니다."),

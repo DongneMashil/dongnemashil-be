@@ -1,16 +1,12 @@
-package com.example.dongnemashilbe.review.entity;
+package com.example.dongnemashilbe.like.entity;
 
+import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "`like`")
 @NoArgsConstructor

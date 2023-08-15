@@ -2,10 +2,9 @@ package com.example.dongnemashilbe.review.service;
 
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
-import com.example.dongnemashilbe.review.dto.MainPageReviewResponseDto;
 import com.example.dongnemashilbe.review.dto.SearchResponseDto;
 import com.example.dongnemashilbe.review.entity.Review;
-import com.example.dongnemashilbe.review.repository.LikeRepository;
+import com.example.dongnemashilbe.like.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
