@@ -31,8 +31,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
-            log.error(requestDto.getEmail());
-            log.error(requestDto.getPassword());
             // AuthenticationManager 가 인증처리
             return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -42,7 +40,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     )
             );
         } catch (IOException e) {
-//            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -60,10 +57,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(new SuccessMessageDto("로그인 성공"));
-        // Send user details to the frontend
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
         response.getWriter().write(userJson);
 
 
