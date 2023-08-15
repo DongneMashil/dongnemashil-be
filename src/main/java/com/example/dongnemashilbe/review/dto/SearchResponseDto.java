@@ -3,6 +3,8 @@ package com.example.dongnemashilbe.review.dto;
 import com.example.dongnemashilbe.review.entity.Review;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class SearchResponseDto {
 
@@ -14,6 +16,7 @@ public class SearchResponseDto {
     private Integer likeCnt;
     private boolean likebool;
     private String address;
+    private LocalDateTime createdAt;
 
     public SearchResponseDto(Review review, Integer likeCount, String mainImgUrl, boolean likebool) {
         this.id = review.getId();
@@ -24,5 +27,6 @@ public class SearchResponseDto {
         this.mainImgUrl = mainImgUrl;
         this.likebool = likebool;
         this.address=review.getAddress();
+        this.createdAt=review.getCreatedAt();
     }
 }

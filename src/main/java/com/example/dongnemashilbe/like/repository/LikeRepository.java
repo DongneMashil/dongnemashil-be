@@ -3,6 +3,7 @@ package com.example.dongnemashilbe.like.repository;
 import com.example.dongnemashilbe.like.entity.Like;
 import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +23,5 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Integer countByReview(@Param("review") Review review);
 
 
-    Slice<Like> findAllByUser_Id(Long id,Pageable pageable);
+    Page<Like> findAllByUser_Id(Long id, Pageable pageable);
 }
