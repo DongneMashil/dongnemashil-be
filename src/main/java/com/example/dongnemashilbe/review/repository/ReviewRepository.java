@@ -1,5 +1,6 @@
 package com.example.dongnemashilbe.review.repository;
 
+import com.example.dongnemashilbe.comment.entity.Comment;
 import com.example.dongnemashilbe.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +47,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByRecentAndAddressContaining(Pageable pageable, @Param("address") String address);
 
     //태그와 주소를 최신순으로 조회
-    @Query("SELECT DISTINCT r FROM Review r JOIN r.review_tagList t WHERE r.address LIKE %:address% AND t.tag.name IN :tagNames ORDER BY r.createdAt DESC")
-    Page<Review> findAllByRecentAndTagAndAddressContaining(Pageable pageable,@Param("tagNames") List<String> tagNames,@Param("address") String address);
+    @Query("SELECT DISTINCT r FROM Review r " +
+            "JOIN r.review_tagList t WHERE r.address LIKE %:address% " +
+            "AND t.tag.name IN :tagNames ORDER BY r.createdAt DESC")
+    Page<Review> findAllByRecentAndTagAndAddressContaining(Pageable pageable,@Param("tagNames") List<String> tagNames,
+                                                           @Param("address") String address);
 
     // 최신순으로 조회
     @Query("SELECT r FROM Review r ORDER BY r.createdAt DESC")
@@ -57,11 +61,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Long countCommentsByReviewId(@Param("reviewId") Long reviewId);
 
     // 태그를 좋아요순으로 조회
-    @Query("SELECT rt.review FROM Review_Tag rt WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY SIZE(rt.review.likes) DESC, rt.review.id DESC")
+    @Query("SELECT rt.review FROM Review_Tag rt " +
+            "WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY SIZE(rt.review.likes) DESC, rt.review.id DESC")
     Slice<Review> findAllByLikesAndTags(Pageable pageable, @Param("tags") List<String> tags);
 
     // 태그를 최신순으로 조회
-    @Query("SELECT rt.review FROM Review_Tag rt WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY rt.review.createdAt DESC")
+    @Query("SELECT rt.review FROM Review_Tag rt " +
+            "WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY rt.review.createdAt DESC")
     Slice<Review> findAllByRecentAndTags(Pageable pageable, @Param("tags") List<String> tags);
 
     // 유저가 작성한 리뷰 조회

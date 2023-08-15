@@ -216,7 +216,7 @@ public class ReviewService {
 
         reviewRepository.delete(review);
     }
-
+    /*=============================================메서드=============================================================*/
     private Review findReviewById(Long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
@@ -231,7 +231,6 @@ public class ReviewService {
         }
     }
 
-    /*=============================================메서드=============================================================*/
     private void validateMediaFiles(MultipartFile mainImgFile, MultipartFile videoFile, List<MultipartFile> subImgUrl){
 
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
