@@ -62,7 +62,7 @@ public class WebSecurityConfig {
         // CSRF 설정
         http.csrf((csrf) -> csrf.disable());
 
-        http.cors().configurationSource(corsConfigurationSource());
+        http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
         http.exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
@@ -99,7 +99,6 @@ public class WebSecurityConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000/");
         config.addAllowedOrigin("https://dongnemashil.me/");
-        config.addAllowedOrigin("https://flatland.shop/");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");

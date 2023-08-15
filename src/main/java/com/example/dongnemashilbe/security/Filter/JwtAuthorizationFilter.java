@@ -33,30 +33,27 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-    try{
-        String token = jwtUtil.getTokenFromRequest(JwtUtil.ACCESSTOKEN_HEADER,req);
+        try{
+            String token = jwtUtil.getTokenFromRequest(JwtUtil.ACCESSTOKEN_HEADER,req);
 
 
-        if (StringUtils.hasText(token) && token != null) {
+            if (StringUtils.hasText(token) && token != null) {
 
-            String tokenValue = jwtUtil.substringToken(token);
+                String tokenValue = jwtUtil.substringToken(token);
 
-            if (!jwtUtil.validateToken(tokenValue)) {
-                res.sendError(401,"토큰이 유효하지 않습니다.");
+                jwtUtil.validateToken(tokenValue);
+
+                Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+
+                try {
+                    setAuthentication(info.getSubject());
+                } catch (Exception e) {
+                    logger.error("인증오류!!!!");
+                }
             }
-
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
-            try {
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                logger.error("인증오류!!!!");
-            }
+        }catch (Exception e){
+            req.setAttribute("exception",e);
         }
-    }catch (Exception e){
-        req.setAttribute("exception",e);
-    }
-//        logger.error("토큰이 존재하지 않습니다.");
         logger.error(req.getRequestURI());
         filterChain.doFilter(req, res);
     }
