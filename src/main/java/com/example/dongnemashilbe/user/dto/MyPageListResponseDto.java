@@ -11,7 +11,7 @@ public class MyPageListResponseDto {
 
     private Long reviewId;
     private String imgUrl;
-    private String address;
+    private String roadName;
     private String userprofileUrl;
     private LocalDateTime createdAt;
 
@@ -19,14 +19,14 @@ public class MyPageListResponseDto {
     public MyPageListResponseDto(Like like) {
         this.reviewId = like.getReview().getId();
         this.imgUrl = like.getReview().getMainImgUrl();
-        this.address = like.getReview().getAddress();
+        this.roadName = like.getReview().getRoadName();
         this.userprofileUrl = like.getReview().getUser().getProfileImgUrl();
     }
 
     public MyPageListResponseDto(Review review) {
         this.reviewId = review.getId();
         this.imgUrl = review.getMainImgUrl();
-        this.address = review.getAddress();
+        this.roadName = review.getRoadName();
         this.createdAt = review.getCreatedAt();
     }
 }

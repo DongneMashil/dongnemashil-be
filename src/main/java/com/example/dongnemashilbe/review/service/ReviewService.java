@@ -167,23 +167,19 @@ public class ReviewService {
                 mediaUrlsDto.getSubImageUrlsString(),
                 mediaUrlsDto.getVideoUrl());
 
-        List<String> tagName = detailPageRequestDto.getTag();
-        // 태그 업데이트
 
-        for (String tagCategory : tagName) {
-            Optional<Tag> existingTag = tagRepository.findByName(tagCategory);
+        List<Review_Tag> existingTags = review_tagRepository.findAllByReview(review);
+        review_tagRepository.deleteAll(existingTags);
 
-            Tag tag;
-            if (existingTag.isPresent()) {
-                tag = existingTag.get();
-            } else {
-                tag = new Tag(tagCategory);
-                tagRepository.save(tag);
-            }
-            Review_Tag review_tag = new Review_Tag(review, tag);
-            review_tagRepository.save(review_tag);
+
+        List<String> newTagNames = detailPageRequestDto.getTag();
+        for (String newTagName : newTagNames) {
+            Tag tag = tagRepository.findByName(newTagName).orElse(new Tag(newTagName));
+            review_tagRepository.save(new Review_Tag(review, tag));
         }
+
         return new WriteReviewResponseDto(review.getId());
+
     }
 
     @Transactional
