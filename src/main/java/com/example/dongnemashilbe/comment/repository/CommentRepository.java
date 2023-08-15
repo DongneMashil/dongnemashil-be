@@ -6,6 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
-
+    Page<Comment> findAllByUser_Id(Long user_id, Pageable pageable);
     Page<Comment> findByReviewId(Long reviewId, Pageable pageable);
 }
