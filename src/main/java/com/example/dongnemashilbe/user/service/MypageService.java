@@ -7,11 +7,14 @@ import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.like.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
+import com.example.dongnemashilbe.security.jwt.JwtUtil;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageResponseDto;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
+import com.example.dongnemashilbe.user.entity.UserRoleEnum;
 import com.example.dongnemashilbe.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +35,7 @@ public class MypageService {
     private final LikeRepository likeRepository;
     private final ReviewRepository reviewRepository;
     private final CommentRepository commentRepository;
+    private final JwtUtil jwtUtil;
 
 
     public MyPageResponseDto getUserInfo(User user) {
@@ -40,7 +44,8 @@ public class MypageService {
 
 
     @Transactional
-    public SuccessMessageDto modifyUserInfo(Long id, String nickname, MultipartFile file) throws IOException {
+    public SuccessMessageDto modifyUserInfo(Long id, String nickname,
+                                            MultipartFile file, HttpServletResponse response) throws IOException {
 
        User user = userRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -50,6 +55,11 @@ public class MypageService {
 
        user.uploadUser(nickname,S3Url);
 
+        String accessToken = jwtUtil.createAccessToken(nickname, UserRoleEnum.USER);
+        String refreshToken = jwtUtil.createRefreshToken(nickname);
+
+        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+        jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
 
         return new SuccessMessageDto("회원정보 수정이 완료 되었습니다.");
     }
