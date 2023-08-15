@@ -6,6 +6,7 @@ import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageResponseDto;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.service.MypageService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,9 +33,10 @@ public class MyPageController {
     @PatchMapping("")
     public SuccessMessageDto modifyUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @RequestPart(name = "nickname") String nickname,
-                                            @RequestPart(name = "file", required = false) MultipartFile file
+                                            @RequestPart(name = "file", required = false) MultipartFile file,
+                                            HttpServletResponse response
                                             ) throws IOException {
-        return mypageService.modifyUserInfo(userDetails.getUser().getId(), nickname,file);
+        return mypageService.modifyUserInfo(userDetails.getUser().getId(), nickname,file,response);
     }
 
     @GetMapping("/list")
