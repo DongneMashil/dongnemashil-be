@@ -30,12 +30,9 @@ public class CommentService {
 
     public Page<CommentResponseDto> getCommentList(Long review_id, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Review review = getReview(review_id);
 
-        List<CommentResponseDto> commentResponseDtoList =
-                review.getCommentList().stream().map(CommentResponseDto::new).toList();
-
-        return new PageImpl(commentResponseDtoList,pageable,commentResponseDtoList.size());
+        Page<Comment> comments = commentRepository.findByReviewId(review_id, pageable);
+        return comments.map(CommentResponseDto::new);
     }
 
 

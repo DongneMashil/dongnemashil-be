@@ -70,6 +70,6 @@ public class MypageService {
     public Page<CommentResponseDto> getMyCommentList(Long id, Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 16);
 
-        return commentRepository.findAllByUser_Id(id,pageable).map(CommentResponseDto::new);
+        return commentRepository.findByReviewId(id,pageable).map(CommentResponseDto::new);
     }
 }
