@@ -42,16 +42,15 @@ public class SearchService {
             if (!tags.isEmpty()) {
                 reviews = reviewRepository.findAllByLikesAndTagAndAddressContaining(pageable,tags,q, (long) tags.size());
             } else {
-                String qwe = "서울시 "+q+" 나머지 주소 정보";
-                reviews = reviewRepository.findAllByLikesAndAddressContaining(pageable,qwe);
+                reviews = reviewRepository.findAllByLikesAndAddressContaining(pageable,q);
             }
         } else if ("recent".equals(type)) {
 
 
             if (tags != null) {
-                reviews = reviewRepository.findAllByRecentAndTagAndAddressContaining(pageable ,tags,"서울시 "+q);
+                reviews = reviewRepository.findAllByRecentAndTagAndAddressContaining(pageable ,tags,q);
             } else {
-                reviews = reviewRepository.findAllByRecentAndAddressContaining(pageable,"서울시 "+q);
+                reviews = reviewRepository.findAllByRecentAndAddressContaining(pageable,q);
             }
         } else {
             throw new CustomException(ErrorCode.OUT_OF_RANGE);

@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface  ReviewRepository extends JpaRepository<Review, Long> {
 
     //좋아요 카운트
     @Query("SELECT COUNT(l) FROM Like l WHERE l.review.id = :reviewId")
@@ -24,7 +24,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Slice<Review> findAllByLikes(Pageable pageable);
 
     //태그 없이 주소를 좋아요 순으로 조회
-    @Query("SELECT r FROM Review r WHERE r.address LIKE :address% ORDER BY SIZE(r.likes) DESC")
+    @Query("SELECT r FROM Review r WHERE r.address LIKE %:address% ORDER BY SIZE(r.likes) DESC")
     Page<Review> findAllByLikesAndAddressContaining(Pageable pageable, @Param("address") String address);
 
     //태그와 주소를 좋아요 순으로 조회
