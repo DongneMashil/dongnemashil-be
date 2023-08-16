@@ -55,7 +55,6 @@ main ← develop ← feature/[브랜치명],#[이슈번호]
 | Commit              | Project Issue 별로 작성 (하기 설명)      | Create : CRUD 스켈레톤 생성    |
 | 변수명/함수명 길이  | 4단어 이하 (부득이하게 늘어날 경우 상의) | getUserData                    |
 | 약칭 사용           | 사용                            | count (=  cnt)                |
-| Async, Await        | Async, Await만 사용 (불가피한 경우 상의) | -                              |
 | 주석                | 필요한 경우만 사용, 팀원                    | -                              |
 | 커밋 이름           | 커밋타입 : 한글로 설명                   | ‘create : 회원가입페이지 생성’ |
 | 줄의 길이          | intellij code style에 default 설정값 = 120       | -                             
