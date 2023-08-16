@@ -69,7 +69,12 @@ main ← develop ← feature/[브랜치명],#[이슈번호]
 2. log & System.out.println() 등 확인용 코드 삭제후 커밋
 3. Return값 DTO로 통일 
 
-<br>
+## 💡ERD
+
+![스크린샷 2023-08-16 오후 8 08 14](https://github.com/DongneMashil/dongnemashil-be/assets/128367271/0423f233-fb3d-4f85-b6c2-a4ebea4d9912)
+
+
+
 
 ## 💡기술 스택
 
