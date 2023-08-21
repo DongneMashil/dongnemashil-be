@@ -28,7 +28,7 @@ public class Review extends Timestamped {
     @Column(name = "road_name")
     private String roadName;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 500)
     private String content;
 
     @Column(nullable = false)
