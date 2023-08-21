@@ -64,11 +64,4 @@ public class UserController {
     public SuccessMessageDto checkedEmail(@RequestBody EmailRequestDto emailRequestDto){
         return userService.checkedEmail(emailRequestDto);
     }
-
-    @GetMapping("/logout")
-    public SuccessMessageDto logout( HttpServletResponse response){
-        userService.logout(response);
-        return new SuccessMessageDto("로그아웃이 완료되었습니다.");
-
-    }
 }

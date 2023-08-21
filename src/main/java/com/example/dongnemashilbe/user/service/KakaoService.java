@@ -50,10 +50,10 @@ public class KakaoService {
         //4. JWT 토큰 반환
 
 
-        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,
+        jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,
                 jwtUtil.createAccessToken(kakaoUser.getNickname(),kakaoUser.getRole()),response);
 
-        jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,
+        jwtUtil.addJwtToHeader(JwtUtil.REFRESHTOKEN_HEADER,
                 jwtUtil.createRefreshToken(kakaoUser.getNickname()),response);
     }
     private String getToken(String code) throws JsonProcessingException {
