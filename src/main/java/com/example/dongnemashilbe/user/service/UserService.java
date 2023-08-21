@@ -50,12 +50,12 @@ public class UserService {
         String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
         String refreshToken = jwtUtil.createRefreshToken(nickname);
 
-        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
-        jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
     }
 
     public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String token = jwtUtil.getTokenFromRequest(JwtUtil.REFRESHTOKEN_HEADER,request);
+        String token = request.getHeader(JwtUtil.REFRESHTOKEN_HEADER);
 
         String tokenValue = jwtUtil.substringToken(token);
 
@@ -63,7 +63,7 @@ public class UserService {
 
         String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
 
-        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
     }
 
     public SuccessMessageDto checkedNickname(NicknameRequestDto nicknameRequestDto) {
@@ -76,10 +76,5 @@ public class UserService {
         if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         return new SuccessMessageDto("사용가능한 닉네임 입니다.");
-    }
-
-    public void logout( HttpServletResponse response) {
-        jwtUtil.logout(JwtUtil.ACCESSTOKEN_HEADER,"accessToken",response);
-        jwtUtil.logout(JwtUtil.REFRESHTOKEN_HEADER,"refreshToken",response);
     }
 }

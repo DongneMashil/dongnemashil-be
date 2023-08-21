@@ -58,8 +58,8 @@ public class MypageService {
         String accessToken = jwtUtil.createAccessToken(nickname, UserRoleEnum.USER);
         String refreshToken = jwtUtil.createRefreshToken(nickname);
 
-        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
-        jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
 
         return new SuccessMessageDto("회원정보 수정이 완료 되었습니다.");
     }
