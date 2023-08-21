@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Optional;
 
 @Service
@@ -54,9 +56,9 @@ public class UserService {
         jwtUtil.addJwtToHeader(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
     }
 
-    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader(JwtUtil.REFRESHTOKEN_HEADER);
+    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
+        String token = URLDecoder.decode(request.getHeader(JwtUtil.REFRESHTOKEN_HEADER), "UTF-8");
         String tokenValue = jwtUtil.substringToken(token);
 
         String nickname = jwtUtil.getUserInfoFromToken(tokenValue).getSubject();
