@@ -4,6 +4,7 @@ import com.example.dongnemashilbe.aop.ExeTimer;
 import com.example.dongnemashilbe.review.dto.SearchResponseDto;
 import com.example.dongnemashilbe.review.service.SearchService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
@@ -26,7 +27,7 @@ public class SearchController {
                                           @RequestParam(value = "page", defaultValue = "1") Integer page,
                                           @RequestParam(required = false) String tag,
                                           @RequestParam String q,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
         try{
             userDetails.getUser();
         }catch (NullPointerException e){

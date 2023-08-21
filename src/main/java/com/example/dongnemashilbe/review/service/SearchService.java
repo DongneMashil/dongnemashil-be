@@ -7,8 +7,12 @@ import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.like.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.user.entity.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,10 +24,19 @@ import java.util.List;
 public class SearchService {
     private final ReviewRepository reviewRepository;
     private final LikeRepository likeRepository;
+    private final RedisTemplate<String,String> redisTemplate;
 
-    public Page<SearchResponseDto> search(String type, Integer page, String q, String tag, User user) {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+
+    public Page<SearchResponseDto> search(String type, Integer page, String q, String tag, User user) throws JsonProcessingException {
+        String cacheKey = generateCacheKey(type, page, q, tag);
+
+        Object cachedResult = redisTemplate.opsForValue().get(cacheKey);
+        if (cachedResult != null) {
+            return objectMapper.readValue((String) cachedResult, new TypeReference<PageImpl<SearchResponseDto>>() {});
+        }
         Pageable pageable = PageRequest.of(page-1, 12);
-//        reviewRepository.findByAddress(q);
 
         List<String> tags = new ArrayList<>();
         List<SearchResponseDto> dtos = new ArrayList<>();
@@ -69,7 +82,13 @@ public class SearchService {
             dtos.add(new SearchResponseDto(review, likeCount, mainImgUrl, likebool));
         }
 
+        Page<SearchResponseDto> resultPage = new PageImpl<>(dtos, pageable, reviews.getTotalElements());
+        redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(resultPage));
 
-        return new PageImpl<SearchResponseDto>(dtos, pageable, reviews.getTotalElements());
+        return resultPage;
+
+    }
+    private String generateCacheKey(String type, Integer page, String q, String tag) {
+        return "search:" + type + ":" + page + ":" + q + ":" + tag;
     }
 }
