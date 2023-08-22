@@ -22,6 +22,7 @@ public class SearchResponseDto implements Serializable {
     private LocalDateTime createdAt;
 
     public SearchResponseDto(Review review, Integer likeCount, String mainImgUrl, boolean likebool) {
+
         this.id = review.getId();
         this.roadName = review.getRoadName();
         this.nickname =review.getUser().getNickname();
@@ -32,4 +33,5 @@ public class SearchResponseDto implements Serializable {
         this.address=review.getAddress();
         this.createdAt=review.getCreatedAt();
     }
+
 }
