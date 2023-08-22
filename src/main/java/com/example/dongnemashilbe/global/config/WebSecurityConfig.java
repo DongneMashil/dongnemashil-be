@@ -106,8 +106,10 @@ public class WebSecurityConfig {
         config.addAllowedMethod("PUT");
         config.addAllowedMethod("PATCH");
         config.addAllowedMethod("DELETE");
-        config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("*"));
+        config.addAllowedHeader("*");
+        config.addExposedHeader("*");
+        config.addExposedHeader("Accesstoken");
+        config.addExposedHeader("Refreshtoken");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
