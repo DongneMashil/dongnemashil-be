@@ -10,9 +10,7 @@ import com.example.dongnemashilbe.user.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.fasterxml.jackson.databind.SerializationFeature;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,9 +40,7 @@ public class SearchService {
         String cachedResult = redisTemplate.opsForValue().get(redisKey); // 레디스에서 결과 가져오기
 
         ObjectMapper objectMapper = new ObjectMapper();
-
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
 
         if (cachedResult != null) {
             List<SearchResponseDto> dtos = objectMapper.readValue(cachedResult, new TypeReference<List<SearchResponseDto>>() {});
@@ -102,14 +98,6 @@ public class SearchService {
 
         // 결과를 레디스에 저장
         redisTemplate.opsForValue().set(redisKey, objectMapper.writeValueAsString(dtos));
-
-        Boolean success = redisTemplate.expire(redisKey, 3, TimeUnit.MINUTES);
-        if (!success) {
-
-
-        // 결과를 레디스에 저장
-        redisTemplate.opsForValue().set(redisKey, objectMapper.writeValueAsString(dtos));
-
 
         Boolean success = redisTemplate.expire(redisKey, 3, TimeUnit.MINUTES);
         if (!success) {
