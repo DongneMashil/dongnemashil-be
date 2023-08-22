@@ -1,47 +1,41 @@
 package com.example.dongnemashilbe.global.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisSentinelConfiguration;
+import org.springframework.data.redis.connection.RedisPassword;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
+
 public class RedisConfig {
 
-    @Value("${spring.data.redis.sentinel.master}")
-    private String master;
+    private final RedisProperties redisProperties;
 
-    @Value("${spring.data.redis.sentinel.nodes}")
-    private String nodes;
+@Bean
+public RedisConnectionFactory redisConnectionFactory() {
+    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+    redisStandaloneConfiguration.setHostName(redisProperties.getHost());
+    redisStandaloneConfiguration.setPort(redisProperties.getPort());
+    redisStandaloneConfiguration.setPassword(RedisPassword.of(redisProperties.getPassword()));
 
-
-
-
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration();
-        sentinelConfig.master(master);
-        String[] nodeArray = nodes.split(",");
-        for (String node : nodeArray) {
-            String[] hostAndPort = node.split(":");
-            sentinelConfig.sentinel(hostAndPort[0], Integer.parseInt(hostAndPort[1]));
-        }
-
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(sentinelConfig);
-
-        return lettuceConnectionFactory;
-    }
+    return new LettuceConnectionFactory(redisStandaloneConfiguration);
+}
 
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+
         return redisTemplate;
     }
+
 }
