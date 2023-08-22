@@ -2,11 +2,13 @@ package com.example.dongnemashilbe.review.dto;
 
 import com.example.dongnemashilbe.review.entity.Review;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 public class SearchResponseDto implements Serializable {
 
     private Long id;
