@@ -3,10 +3,11 @@ package com.example.dongnemashilbe.review.dto;
 import com.example.dongnemashilbe.review.entity.Review;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-public class SearchResponseDto {
+public class SearchResponseDto implements Serializable {
 
     private Long id;
     private String roadName;

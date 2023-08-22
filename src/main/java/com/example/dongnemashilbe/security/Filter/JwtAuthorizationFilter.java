@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -34,8 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         try{
-            String token = jwtUtil.getTokenFromRequest(JwtUtil.ACCESSTOKEN_HEADER,req);
-
+            String token =URLDecoder.decode(req.getHeader(JwtUtil.ACCESSTOKEN_HEADER), "UTF-8");
 
             if (StringUtils.hasText(token) && token != null) {
 

@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Optional;
 
 @Service
@@ -50,20 +52,20 @@ public class UserService {
         String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
         String refreshToken = jwtUtil.createRefreshToken(nickname);
 
-        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
-        jwtUtil.addJwtToCookie(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
     }
 
-    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String token = jwtUtil.getTokenFromRequest(JwtUtil.REFRESHTOKEN_HEADER,request);
+    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
+        String token = URLDecoder.decode(request.getHeader(JwtUtil.REFRESHTOKEN_HEADER), "UTF-8");
         String tokenValue = jwtUtil.substringToken(token);
 
         String nickname = jwtUtil.getUserInfoFromToken(tokenValue).getSubject();
 
         String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
 
-        jwtUtil.addJwtToCookie(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
+        jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
     }
 
     public SuccessMessageDto checkedNickname(NicknameRequestDto nicknameRequestDto) {
@@ -76,10 +78,5 @@ public class UserService {
         if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         return new SuccessMessageDto("사용가능한 닉네임 입니다.");
-    }
-
-    public void logout( HttpServletResponse response) {
-        jwtUtil.logout(JwtUtil.ACCESSTOKEN_HEADER,"accessToken",response);
-        jwtUtil.logout(JwtUtil.REFRESHTOKEN_HEADER,"refreshToken",response);
     }
 }

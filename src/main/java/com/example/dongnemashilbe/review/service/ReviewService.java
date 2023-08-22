@@ -230,7 +230,7 @@ public class ReviewService {
     private void validateMediaFiles(MultipartFile mainImgFile, MultipartFile videoFile, List<MultipartFile> subImgUrl){
 
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
-        List<String> allowedVideoExtensions = Arrays.asList("mp4");
+        List<String> allowedVideoExtensions = Arrays.asList("mp4","mov");
 
         if (mainImgFile != null) {
             String mainImgExtension = mainImgFile.getOriginalFilename()

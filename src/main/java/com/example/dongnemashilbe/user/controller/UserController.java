@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 
 
 @RestController
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/refreshtoken")
-    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response){
+    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
         userService.getRefreshToken(request,response);
 
@@ -63,12 +64,5 @@ public class UserController {
     @PostMapping("/register/email")
     public SuccessMessageDto checkedEmail(@RequestBody EmailRequestDto emailRequestDto){
         return userService.checkedEmail(emailRequestDto);
-    }
-
-    @GetMapping("/logout")
-    public SuccessMessageDto logout( HttpServletResponse response){
-        userService.logout(response);
-        return new SuccessMessageDto("로그아웃이 완료되었습니다.");
-
     }
 }

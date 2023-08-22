@@ -80,32 +80,11 @@ public class JwtUtil {
     }
 
     // JWT Cookie 에 저장
-    public void addJwtToCookie(String header,String token, HttpServletResponse res) {
+    public void addJwtToHeader(String header, String token, HttpServletResponse res) {
         try {
             token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
 
-            String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=840";
-
-
-            if(header.equals(REFRESHTOKEN_HEADER)){
-                headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=3600";
-            }
-
-            res.addHeader("Set-Cookie", header+"="+token+headerValue);
-
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage()+"쿠키 전달 실패");
-        }
-    }
-
-    
-    public void logout(String header,String token, HttpServletResponse res) {
-        try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
-
-            String headerValue = "; Path=/; Secure; HttpOnly; SameSite=None; Max-Age=0";
-
-            res.addHeader("Set-Cookie", header+"="+token+headerValue);
+            res.addHeader(header,token);
 
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage()+"쿠키 전달 실패");
@@ -147,22 +126,5 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    // HttpServletRequest 에서 Cookie Value : JWT 가져오기
-    public String getTokenFromRequest(String tokenHeader, HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(tokenHeader)) {
-                    try {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value 다시 Decode
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
-                }
-            }
-            throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
-        }
-        return null;
-    }
 
 }

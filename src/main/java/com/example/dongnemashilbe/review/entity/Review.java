@@ -9,6 +9,7 @@ import com.example.dongnemashilbe.global.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table
-
 public class Review extends Timestamped {
 
     @Id
@@ -28,7 +28,7 @@ public class Review extends Timestamped {
     @Column(name = "road_name")
     private String roadName;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 500)
     private String content;
 
     @Column(nullable = false)
