@@ -1,5 +1,7 @@
 package com.example.dongnemashilbe.security.Filter;
 
+import com.example.dongnemashilbe.exception.CustomException;
+import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.security.jwt.JwtUtil;
 import com.example.dongnemashilbe.security.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
@@ -35,8 +37,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         try{
+            if (req.getHeader(JwtUtil.ACCESSTOKEN_HEADER) == null)
+                throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
             String token =URLDecoder.decode(req.getHeader(JwtUtil.ACCESSTOKEN_HEADER), "UTF-8");
-
+            
             if (StringUtils.hasText(token) && token != null) {
 
                 String tokenValue = jwtUtil.substringToken(token);
