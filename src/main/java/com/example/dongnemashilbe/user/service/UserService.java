@@ -58,7 +58,10 @@ public class UserService {
 
     public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
-        String token = URLDecoder.decode(request.getHeader(JwtUtil.REFRESHTOKEN_HEADER), "UTF-8");
+        if (request.getHeader(JwtUtil.REFRESHTOKEN_HEADER) == null)
+            throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
+        String token =URLDecoder.decode(request.getHeader(JwtUtil.REFRESHTOKEN_HEADER), "UTF-8");
+
         String tokenValue = jwtUtil.substringToken(token);
 
         String nickname = jwtUtil.getUserInfoFromToken(tokenValue).getSubject();
