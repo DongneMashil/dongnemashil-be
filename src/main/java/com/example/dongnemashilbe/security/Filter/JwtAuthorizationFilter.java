@@ -40,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token) && token != null) {
 
                 String tokenValue = jwtUtil.substringToken(token);
-
+                logger.error("토큰 확인용 : "+tokenValue);
                 jwtUtil.validateToken(tokenValue);
 
                 Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
