@@ -45,12 +45,13 @@ public interface  ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.address LIKE %:address% ORDER BY r.createdAt DESC")
     Page<Review> findAllByRecentAndAddressContaining(Pageable pageable, @Param("address") String address);
 
+
     //태그와 주소를 최신순으로 조회
     @Query("SELECT DISTINCT r FROM Review r " +
             "JOIN r.review_tagList t WHERE r.address LIKE %:address% " +
             "AND t.tag.name IN :tagNames ORDER BY r.createdAt DESC")
-    Page<Review> findAllByRecentAndTagAndAddressContaining(Pageable pageable,@Param("tagNames") List<String> tagNames,
-                                                           @Param("address") String address);
+    Page<Review> findAllByRecentAndTagAndAddressContaining(Pageable pageable, @Param("tagNames") List<String> tagNames, @Param("address") String address);
+
 
     // 최신순으로 조회
     @Query("SELECT r FROM Review r ORDER BY r.createdAt DESC")

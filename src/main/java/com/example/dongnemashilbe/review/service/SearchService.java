@@ -23,8 +23,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,50 +53,24 @@ public class SearchService {
 
         Pageable pageable = PageRequest.of(page-1, 12);
 
-        List<String> tags = new ArrayList<>();
-        List<SearchResponseDto> dtos = new ArrayList<>();
+        List<String> tags = tag != null && !tag.isEmpty() ? tag.contains(",")
+                ? Arrays.asList(tag.split(",")) : Collections.singletonList(tag) : Collections.emptyList();
         Page<Review> reviews;
 
         if ("likes".equals(type)) {
-            if (tag != null){
-                if (tag.contains(",")){
-                    tags = Arrays.asList(tag.split(","));
-                }
-                else{
-                    tags.add(tag);
-                }
-            }
-
-            if (!tags.isEmpty()) {
-                reviews = reviewRepository.findAllByLikesAndTagAndAddressContaining(pageable,tags,q, (long) tags.size());
-            } else {
-                reviews = reviewRepository.findAllByLikesAndAddressContaining(pageable,q);
-            }
+            reviews = tags.isEmpty() ? reviewRepository.findAllByLikesAndAddressContaining(pageable, q)
+                    : reviewRepository.findAllByLikesAndTagAndAddressContaining(pageable, tags, q, (long) tags.size());
         } else if ("recent".equals(type)) {
-
-
-            if (tags != null) {
-                reviews = reviewRepository.findAllByRecentAndTagAndAddressContaining(pageable ,tags,q);
-            } else {
-                reviews = reviewRepository.findAllByRecentAndAddressContaining(pageable,q);
-            }
+            reviews = tags.isEmpty() ? reviewRepository.findAllByRecentAndAddressContaining(pageable, q)
+                    : reviewRepository.findAllByRecentAndTagAndAddressContaining(pageable, tags, q);
         } else {
             throw new CustomException(ErrorCode.OUT_OF_RANGE);
         }
 
-        for (Review review : reviews) {
-            Integer likeCount = likeRepository.countByReview(review);
-
-            boolean likebool = false;
-            if (user != null) {
-                likebool = likeRepository.findByUserAndReview(user, review).isPresent();
-            }
-
-            String mainImgUrl = review.getMainImgUrl();
-
-            dtos.add(new SearchResponseDto(review, likeCount, mainImgUrl, likebool));
-        }
-
+        List<SearchResponseDto> dtos = reviews.stream()
+                .map(review -> new SearchResponseDto(review, likeRepository.countByReview(review), review.getMainImgUrl(),
+                        user != null && likeRepository.findByUserAndReview(user, review).isPresent()))
+                .collect(Collectors.toList());
         Page<SearchResponseDto> resultPage = new PageImpl<>(dtos, pageable, reviews.getTotalElements());
 
 
