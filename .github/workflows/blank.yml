@@ -10,8 +10,8 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: ${{ secrets.AWS_SECRET_BUCKET }}
-  CODE_DEPLOY_APPLICATION_NAME: my-codegyeon-app
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: my-codedeploy-codegyeon-group
+  CODE_DEPLOY_APPLICATION_NAME: my-codedeploy-app
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: my-codedeploy-deployment-group
 
 permissions:
   contents: read
