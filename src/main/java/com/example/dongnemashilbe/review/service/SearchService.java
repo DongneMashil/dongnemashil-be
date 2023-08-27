@@ -37,7 +37,7 @@ public class SearchService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public Page<SearchResponseDto> search(String type, Integer page, String q, String tag, User user) throws JsonProcessingException {
-        String redisKey = buildRedisKey(type, q, tag);
+        String redisKey = buildRedisKey(type, q, tag, page);
 
 
         String cachedResult = redisTemplate.opsForValue().get(redisKey); // 레디스에서 결과 가져오기
@@ -95,8 +95,8 @@ public class SearchService {
 
         return resultPage;
     }
-    private String buildRedisKey(String type, String q, String tag) {
-        return "search:{\"type\":\"" + type + "\",\"query\":\"" + q + "\",\"tag\":\"" + tag + "\"}";
+    private String buildRedisKey(String type, String q, String tag,Integer page) {
+        return "search:{\"type\":\"" + type + "\",\"query\":\"" + q + "\",\"tag\":\"" + tag + "\",\"page\":\"" + page + "\"}";
     }
 
 
