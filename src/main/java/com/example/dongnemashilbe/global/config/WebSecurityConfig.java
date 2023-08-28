@@ -100,7 +100,7 @@ public class WebSecurityConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000/");
         config.addAllowedOrigin("https://dongnemashil.me/");
-        config.addAllowedOrigin("https://testggyeon.shop/");
+        config.addAllowedOrigin("https://dongnemasila.shop/");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");

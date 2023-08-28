@@ -68,7 +68,7 @@ public class SearchService {
         }
 
         List<SearchResponseDto> dtos = reviews.stream()
-                .map(review -> new SearchResponseDto(review, likeRepository.countByReview(review), review.getMainImgUrl(),
+                .map(review -> new SearchResponseDto(review, likeRepository.countByReview(review),
                         user != null && likeRepository.findByUserAndReview(user, review).isPresent()))
                 .collect(Collectors.toList());
         Page<SearchResponseDto> resultPage = new PageImpl<>(dtos, pageable, reviews.getTotalElements());

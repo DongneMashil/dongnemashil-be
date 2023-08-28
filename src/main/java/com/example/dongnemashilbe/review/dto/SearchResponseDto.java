@@ -14,21 +14,23 @@ public class SearchResponseDto implements Serializable {
     private Long id;
     private String roadName;
     private String nickname;
-    private String mainImgUrl;
+    private String middleMainImgUrl;
+    private String smallMainImgUrl;
     private String profileImgUrl;
     private Integer likeCnt;
     private boolean likebool;
     private String address;
     private LocalDateTime createdAt;
 
-    public SearchResponseDto(Review review, Integer likeCount, String mainImgUrl, boolean likebool) {
+    public SearchResponseDto(Review review, Integer likeCount, boolean likebool) {
 
         this.id = review.getId();
         this.roadName = review.getRoadName();
         this.nickname =review.getUser().getNickname();
         this.likeCnt = likeCount;
         this.profileImgUrl = review.getUser().getProfileImgUrl();
-        this.mainImgUrl = mainImgUrl;
+        this.middleMainImgUrl = review.getMiddleMainImgUrl();
+        this.smallMainImgUrl=review.getSmallMainImgUrl();
         this.likebool = likebool;
         this.address=review.getAddress();
         this.createdAt=review.getCreatedAt();

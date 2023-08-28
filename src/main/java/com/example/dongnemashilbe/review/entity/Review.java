@@ -40,8 +40,20 @@ public class Review extends Timestamped {
     @Column(length = 1000)
     private String mainImgUrl;
 
+    @Column(length = 1000)
+    private String middleMainImgUrl;
+
+    @Column(length = 1000)
+    private String smallMainImgUrl;
+
     @Column(length = 10000)
     private String subImgUrl;
+
+    @Column(length = 10000,columnDefinition = "TEXT")
+    private String middleSubImgUrl;
+
+    @Column(length = 10000,columnDefinition = "TEXT")
+    private String smallSubImgUrl;
 
     @Column
     private String videoUrl;
@@ -70,6 +82,22 @@ public class Review extends Timestamped {
         this.user = user;
     }
 
+    public Review(WriteReviewRequestDto writeReviewRequestDto, User user, String mainImgUrl, String subImageUrlsString,
+                  String videoUrl, String smallMainImg, String middleMainImg,String middleSubImageUrlsString,
+                  String smallSubImageUrlsString) {
+        this.title = writeReviewRequestDto.getTitle();
+        this.content = writeReviewRequestDto.getContent();
+        this.address = writeReviewRequestDto.getAddress();
+        this.roadName = writeReviewRequestDto.getRoadName();
+        this.videoUrl = videoUrl;
+        this.mainImgUrl = mainImgUrl;
+        this.subImgUrl = subImageUrlsString;
+        this.user = user;
+        this.smallMainImgUrl=smallMainImg;
+        this.middleMainImgUrl=middleMainImg;
+        this.middleSubImgUrl=middleSubImageUrlsString;
+        this.smallSubImgUrl=smallSubImageUrlsString;
+    }
 
 
     public void update(DetailPageRequestDto detailPageRequestDto,User user,String mainImgUrl, String subImageUrlsString, String videoUrl) {
