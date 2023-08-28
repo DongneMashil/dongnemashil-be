@@ -13,19 +13,21 @@ public class MainPageReviewResponseDto {
     private Long id;
     private String nickname;
     private String roadName;
-    private String mainImgUrl;
+    private String middleMainImgUrl;
+    private String smallMainImgUrl;
     private String profileImgUrl;
     private Integer likeCnt;
     private boolean likebool;
     private LocalDateTime createdAt;
 
-    public MainPageReviewResponseDto(Review review, Integer likeCount, String mainImgUrl, boolean likebool){
+    public MainPageReviewResponseDto(Review review, Integer likeCount, boolean likebool){
         this.id = review.getId();
         this.nickname=review.getUser().getNickname();
         this.roadName = review.getRoadName();
         this.likeCnt = likeCount;
         this.profileImgUrl = review.getUser().getProfileImgUrl();
-        this.mainImgUrl = mainImgUrl;
+        this.middleMainImgUrl = review.getMiddleMainImgUrl();
+        this.smallMainImgUrl=review.getSmallMainImgUrl();
         this.likebool = likebool;
         this.createdAt=review.getCreatedAt();
 

@@ -51,6 +51,21 @@ public class S3Upload {
         //그리고 getUrl 메소드를 통해서 S3에 업로드된 사진 URL을 가져오는 방식입니다.
         return amazonS3.getUrl(bucket, s3FileName).toString();
     }
+    public String upload2(String originalFilename, InputStream inputStream) throws IOException {
+        //S3에 저장되는 파일의 이름이 중복되지 않기 위해서 UUID로 생성한 랜덤 값과 파일 이름을 연결하여 S3에 업로드
+        String s3FileName = UUID.randomUUID() + "-" + originalFilename;
+
+        //그리고 Spring Server에서 S3로 파일을 업로드해야 하는데,
+        // 이 때 파일의 사이즈를 ContentLength로 S3에 알려주기 위해서 ObjectMetadata를 사용합니다.
+        ObjectMetadata objMeta = new ObjectMetadata();
+        objMeta.setContentLength(inputStream.available());
+
+//        //그리고 이제 S3 API 메소드인 putObject를 이용하여 파일 Stream을 열어서 S3에 파일을 업로드 합니다.
+        amazonS3.putObject(bucket, s3FileName, inputStream, objMeta);
+
+        //그리고 getUrl 메소드를 통해서 S3에 업로드된 사진 URL을 가져오는 방식입니다.
+        return amazonS3.getUrl(bucket, s3FileName).toString();
+    }
 
     public void delete(String fileUrl) throws UnsupportedEncodingException {
         fileUrl = URLDecoder.decode(fileUrl, "UTF-8");
