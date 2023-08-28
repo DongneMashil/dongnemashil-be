@@ -47,7 +47,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 
-
+//이미지
+    implementation 'net.coobird:thumbnailator:0.4.20'
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3' // 버전은 사용하고 있는 Jackson 버전에 맞춰주세요
 

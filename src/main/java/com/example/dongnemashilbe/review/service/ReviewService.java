@@ -1,5 +1,6 @@
 package com.example.dongnemashilbe.review.service;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.like.repository.LikeRepository;
@@ -15,6 +16,8 @@ import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnailator;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -22,11 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.*;
 
 
 @Slf4j
@@ -71,9 +73,9 @@ public class ReviewService {
                 likebool = likeRepository.findByUserAndReview(user, review).isPresent();
             }
 
-            String mainImgUrl = review.getMainImgUrl();
 
-            dtos.add(new MainPageReviewResponseDto(review, likeCount, mainImgUrl, likebool));
+
+            dtos.add(new MainPageReviewResponseDto(review, likeCount, likebool));
         }
         return new SliceImpl<>(dtos, pageable, reviews.hasNext());
     }
@@ -83,16 +85,14 @@ public class ReviewService {
         Review review = findReviewById(id);
         Integer likeCount = reviewRepository.countLikesForReviewId(id);
         Long commentCount = reviewRepository.countCommentsByReviewId(id);
-        String mainImgUrl = review.getMainImgUrl();
-        String subImgUrl = review.getSubImgUrl();
-        String videoUrl = review.getVideoUrl();
+
 
         boolean likebool = false;
         if (user != null) {
             likebool = likeRepository.findByUserAndReview(user, review).isPresent();
         }
 
-        return new DetailPageResponseDto(review, likeCount, commentCount, mainImgUrl, subImgUrl, videoUrl,likebool);
+        return new DetailPageResponseDto(review, likeCount, commentCount,likebool);
     }
 
     public WriteReviewResponseDto createReview(WriteReviewRequestDto writeReviewRequestDto,
@@ -106,13 +106,17 @@ public class ReviewService {
 
         validateMediaFiles(mainImgFile, videoFile, subImgUrl);
 
+        String smallMainImg = resizingS3Upload(mainImgFile,360);
+        String middleMainImg = resizingS3Upload(mainImgFile,768);
+
         MediaUrlsDto mediaUrlsDto = setS3Upload(mainImgFile, subImgUrl, videoFile);
 
         // 리뷰 등록
         Review review = new Review(writeReviewRequestDto, user,
                 mediaUrlsDto.getMainImgUrl(),
                 mediaUrlsDto.getSubImageUrlsString(),
-                mediaUrlsDto.getVideoUrl());
+                mediaUrlsDto.getVideoUrl(),smallMainImg,middleMainImg,
+                mediaUrlsDto.getMiddleSubImageUrlsString(),mediaUrlsDto.getSmallSubImageUrlsString());
 
         review = reviewRepository.save(review);
 
@@ -262,31 +266,48 @@ public class ReviewService {
     }
 
     private MediaUrlsDto setS3Upload(MultipartFile mainImgFile,
-                             List<MultipartFile>subImgUrl,
-                             MultipartFile videoFile) throws IOException {
+                                     List<MultipartFile>subImgUrl,
+                                     MultipartFile videoFile) throws IOException {
 
         String mainImgUrl = null;
         if (mainImgFile != null) {
             mainImgUrl = s3Upload.upload(mainImgFile);
         }
         List<String> subImageUrlsList = new ArrayList<>();
+        List<String> middleSubImageUrlsList = new ArrayList<>();
+        List<String> smallSubImageUrlsList = new ArrayList<>();
         if (subImgUrl != null && !subImgUrl.isEmpty()) {
             for (MultipartFile file : subImgUrl) {
                 String imageUrl = s3Upload.upload(file);
+                String smallSubImg = resizingS3Upload(file,360);
+                String middleSubImg = resizingS3Upload(file,768);
                 subImageUrlsList.add(imageUrl);
+                smallSubImageUrlsList.add(smallSubImg);
+                middleSubImageUrlsList.add(middleSubImg);
             }
         }
         // subImageUrlsList를 쉼표로 구분된 문자열로 변환
         String subImageUrlsString = String.join(",", subImageUrlsList);
-
+        String middleSubImageUrlsString = String.join(",", middleSubImageUrlsList);
+        String smallSubImageUrlsString = String.join(",", smallSubImageUrlsList);
         // 동영상 파일 처리
         String videoUrl = null;
         if (videoFile != null) {
             videoUrl = s3Upload.upload(videoFile);
         }
-        return new MediaUrlsDto(mainImgUrl, subImageUrlsString, videoUrl);
+        return new MediaUrlsDto(mainImgUrl, subImageUrlsString,middleSubImageUrlsString,smallSubImageUrlsString, videoUrl);
+    }
+
+    private String resizingS3Upload(MultipartFile mainImgFile,int width) throws IOException {
+        //360x480
+        BufferedImage image = ImageIO.read(mainImgFile.getInputStream());
+        int targetHeight = (int) ((double) image.getHeight() / (double) image.getWidth() * width);
+        BufferedImage thumbnail = Thumbnails.of(image)
+                .size(width, targetHeight)
+                .asBufferedImage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(thumbnail, "png", baos);
+        InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+        return s3Upload.upload2(mainImgFile.getOriginalFilename(), inputStream);
     }
 }
-
-
-

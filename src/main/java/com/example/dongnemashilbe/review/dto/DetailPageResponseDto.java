@@ -19,7 +19,11 @@ public class DetailPageResponseDto {
     private String roadName;
     private String title;
     private String mainImgUrl;
+    private String middleMainImgUrl;
+    private String smallMainImgUrl;
     private List<String> subImgUrl = new ArrayList<>();
+    private List<String> middleSubImgUrl = new ArrayList<>();
+    private List<String> smallSubImgUrl = new ArrayList<>();
     private String videoUrl;
     private Integer likeCnt;
     private Integer commentCnt;
@@ -29,8 +33,7 @@ public class DetailPageResponseDto {
     private boolean likebool;
 
 
-    public DetailPageResponseDto(Review review,Integer likeCount,Long commentCnt,
-                                 String mainImgUrl, String subImgUrl,String videoUrl, boolean likebool){
+    public DetailPageResponseDto(Review review,Integer likeCount,Long commentCnt, boolean likebool){
         this.id=review.getId();
         this.content=review.getContent();
         this.nickname=review.getUser().getNickname();
@@ -46,11 +49,19 @@ public class DetailPageResponseDto {
                 .map(review_tag -> new TagResponseDto(review_tag.getTag()))
                 .collect(Collectors.toList());
         this.likebool = likebool;
-        this.mainImgUrl = mainImgUrl;
+        this.mainImgUrl = review.getMainImgUrl();
+        this.middleMainImgUrl = review.getMiddleMainImgUrl();
+        this.smallMainImgUrl=review.getSmallMainImgUrl();
 
-        for (String sub : subImgUrl.split(",")) {
+        for (String sub : review.getSubImgUrl().split(",")) {
             this.subImgUrl.add(sub) ;
         }
-        this.videoUrl = videoUrl;
+        for (String sub : review.getMiddleSubImgUrl().split(",")) {
+            this.middleSubImgUrl.add(sub) ;
+        }
+        for (String sub : review.getSmallSubImgUrl().split(",")) {
+            this.smallSubImgUrl.add(sub) ;
+        }
+        this.videoUrl = review.getVideoUrl();
     }
 }
