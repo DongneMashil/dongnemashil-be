@@ -152,13 +152,22 @@ public class ReviewService {
         validateMediaFiles(mainImgFile, videoFile, subImgUrl);
 
         MediaUrlsDto mediaUrlsDto = setS3Upload(mainImgFile, subImgUrl, videoFile);
-
+        String smallMainImg = resizingS3Upload(mainImgFile,360);
+        String middleMainImg = resizingS3Upload(mainImgFile,768);
         // 기존 파일 삭제
         if (review.getMainImgUrl() != null) {
             s3Upload.deleteExistingFile(review.getMainImgUrl());
+            s3Upload.deleteExistingFile(review.getMiddleMainImgUrl());
+            s3Upload.deleteExistingFile(review.getSmallMainImgUrl());
         }
         if (review.getSubImgUrl() != null) {
             for (String subImageUrl : review.getSubImgUrl().split(",")) {
+                s3Upload.deleteExistingFile(subImageUrl);
+            }
+            for (String subImageUrl : review.getMiddleSubImgUrl().split(",")) {
+                s3Upload.deleteExistingFile(subImageUrl);
+            }
+            for (String subImageUrl : review.getSmallSubImgUrl().split(",")) {
                 s3Upload.deleteExistingFile(subImageUrl);
             }
         }
@@ -169,7 +178,10 @@ public class ReviewService {
         review.update(detailPageRequestDto, userDetails.getUser(),
                 mediaUrlsDto.getMainImgUrl(),
                 mediaUrlsDto.getSubImageUrlsString(),
-                mediaUrlsDto.getVideoUrl());
+                mediaUrlsDto.getVideoUrl(),
+                mediaUrlsDto.getMiddleSubImageUrlsString(),
+                mediaUrlsDto.getSmallSubImageUrlsString(),
+                smallMainImg,middleMainImg);
 
 
         List<Review_Tag> existingTags = review_tagRepository.findAllByReview(review);
@@ -198,12 +210,24 @@ public class ReviewService {
         try {
             if (review.getMainImgUrl() != null) {
                 s3Upload.delete(review.getMainImgUrl());
+                s3Upload.delete(review.getMiddleMainImgUrl());
+                s3Upload.delete(review.getSmallMainImgUrl());
             }
             if (review.getVideoUrl() != null) {
                 s3Upload.delete(review.getVideoUrl());
             }
             if (review.getSubImgUrl() != null) {
                 for (String subImgUrl : review.getSubImgUrl().split(",")) {
+                    if (subImgUrl != null && !subImgUrl.isEmpty()) {
+                        s3Upload.delete(review.getSubImgUrl());
+                    }
+                }
+                for (String subImgUrl : review.getMiddleSubImgUrl().split(",")) {
+                    if (subImgUrl != null && !subImgUrl.isEmpty()) {
+                        s3Upload.delete(review.getSubImgUrl());
+                    }
+                }
+                for (String subImgUrl : review.getSmallSubImgUrl().split(",")) {
                     if (subImgUrl != null && !subImgUrl.isEmpty()) {
                         s3Upload.delete(review.getSubImgUrl());
                     }

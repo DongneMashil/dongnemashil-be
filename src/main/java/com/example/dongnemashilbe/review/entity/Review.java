@@ -100,7 +100,9 @@ public class Review extends Timestamped {
     }
 
 
-    public void update(DetailPageRequestDto detailPageRequestDto,User user,String mainImgUrl, String subImageUrlsString, String videoUrl) {
+    public void update(DetailPageRequestDto detailPageRequestDto,User user,String mainImgUrl,
+                       String subImageUrlsString, String videoUrl,String middleSubImageUrlsString,
+                       String smallSubImageUrlsString, String smallMainImg, String middleMainImg) {
         this.address = detailPageRequestDto.getAddress();
         this.title = detailPageRequestDto.getTitle();
         this.content = detailPageRequestDto.getContent();
@@ -108,5 +110,9 @@ public class Review extends Timestamped {
         this.mainImgUrl = mainImgUrl;
         this.subImgUrl = subImageUrlsString;
         this.user = user;
+        this.middleSubImgUrl=middleSubImageUrlsString;
+        this.smallSubImgUrl=smallSubImageUrlsString;
+        this.smallMainImgUrl=smallMainImg;
+        this.middleMainImgUrl=middleMainImg;
     }
 }
