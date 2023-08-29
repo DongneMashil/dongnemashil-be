@@ -306,7 +306,15 @@ public class ReviewService {
                 .size(width, targetHeight)
                 .asBufferedImage();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(thumbnail, "png", baos);
+        String mainImgExtension = mainImgFile.getOriginalFilename()
+                .substring(mainImgFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+        if ("png".contains(mainImgExtension)) {
+            ImageIO.write(thumbnail, "png", baos);
+        }else {
+            ImageIO.write(thumbnail, "jpg", baos);
+        }
+
+
         InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
         return s3Upload.upload2(mainImgFile.getOriginalFilename(), inputStream);
     }
