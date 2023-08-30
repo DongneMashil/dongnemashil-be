@@ -25,7 +25,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     // Accesstoken Header KEY 값
-    public static final String ACCESSTOKEN_HEADER = "Accesstoken";
+    public static final String ACCESSTOKEN_HEADER = "Authorization";
 
     // Refreshtoken Header KEY 값
     public static final String REFRESHTOKEN_HEADER = "Refreshtoken";

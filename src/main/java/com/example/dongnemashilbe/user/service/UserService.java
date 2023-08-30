@@ -63,7 +63,7 @@ public class UserService {
 
         if (request.getHeader(JwtUtil.REFRESHTOKEN_HEADER) == null)
             throw new CustomException(ErrorCode.NOT_FOUND_REFRESH_TOKEN);
-        String token =URLDecoder.decode(request.getHeader(JwtUtil.REFRESHTOKEN_HEADER), "UTF-8");
+        String token =request.getHeader(JwtUtil.REFRESHTOKEN_HEADER);
 
         String tokenValue = jwtUtil.substringToken(token);
         try{
