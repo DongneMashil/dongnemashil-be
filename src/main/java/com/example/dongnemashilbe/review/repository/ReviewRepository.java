@@ -50,7 +50,9 @@ public interface  ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT DISTINCT r FROM Review r " +
             "JOIN r.review_tagList t WHERE r.address LIKE %:address% " +
             "AND t.tag.name IN :tagNames ORDER BY r.createdAt DESC")
-    Page<Review> findAllByRecentAndTagAndAddressContaining(Pageable pageable, @Param("tagNames") List<String> tagNames, @Param("address") String address);
+    Page<Review> findAllByRecentAndTagAndAddressContaining(
+            Pageable pageable, @Param("tagNames") List<String> tagNames,
+            @Param("address") String address);
 
 
     // 최신순으로 조회
@@ -61,17 +63,34 @@ public interface  ReviewRepository extends JpaRepository<Review, Long> {
     Long countCommentsByReviewId(@Param("reviewId") Long reviewId);
 
     // 태그를 좋아요순으로 조회
-    @Query("SELECT rt.review FROM Review_Tag rt " +
-            "WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY SIZE(rt.review.likes) DESC, rt.review.id DESC")
-    Slice<Review> findAllByLikesAndTags(Pageable pageable, @Param("tags") List<String> tags);
+
+    @Query("SELECT DISTINCT r FROM Review r " +
+            "JOIN r.review_tagList t " +
+            "WHERE t.tag.name IN :tagNames " +
+            "GROUP BY r " +
+            "HAVING COUNT(DISTINCT t.tag) = :tagCount " +
+            "ORDER BY SIZE(r.likes) DESC")
+    Slice<Review> findAllByLikesAndTags(
+            Pageable pageable,
+            @Param("tagNames") List<String> tagNames,
+            @Param("tagCount") Long tagCount);
 
     // 태그를 최신순으로 조회
-    @Query("SELECT rt.review FROM Review_Tag rt " +
-            "WHERE rt.tag.name IN :tags GROUP BY rt.review ORDER BY rt.review.createdAt DESC")
-    Slice<Review> findAllByRecentAndTags(Pageable pageable, @Param("tags") List<String> tags);
+    @Query("SELECT DISTINCT r FROM Review r " +
+            "JOIN r.review_tagList t " +
+            "WHERE t.tag.name IN :tags " +
+            "GROUP BY r " +
+            "HAVING COUNT(DISTINCT t.tag) = :tagCount " +
+            "ORDER BY r.createdAt DESC")
+    Slice<Review> findAllByRecentAndTags(
+            Pageable pageable,
+            @Param("tags") List<String> tags,
+            @Param("tagCount") Long tagCount);
+
 
     // 유저가 작성한 리뷰 조회
     Page<Review> findAllByUser_Id(Long userId, Pageable pageable);
+
 
 }
 
