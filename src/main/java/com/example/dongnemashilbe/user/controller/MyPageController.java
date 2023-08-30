@@ -3,6 +3,7 @@ package com.example.dongnemashilbe.user.controller;
 import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
 import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageResponseDto;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
@@ -52,8 +53,8 @@ public class MyPageController {
 
 
     @GetMapping("/comments")
-    public Slice<CommentResponseDto> getMyCommentList(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                    @RequestParam(value = "page", defaultValue = "1") Integer page
+    public Slice<MyCommentResponseDto> getMyCommentList(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                        @RequestParam(value = "page", defaultValue = "1") Integer page
                                                      ){
         return mypageService.getMyCommentList(userDetails.getUser().getId(),page);
     }
