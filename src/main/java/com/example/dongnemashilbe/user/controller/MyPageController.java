@@ -1,12 +1,15 @@
 package com.example.dongnemashilbe.user.controller;
 
 import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
+import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageResponseDto;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
+import com.example.dongnemashilbe.user.dto.ValidateNickname;
 import com.example.dongnemashilbe.user.service.MypageService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,11 +35,11 @@ public class MyPageController {
 
     @PatchMapping("")
     public SuccessMessageDto modifyUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @RequestPart(name = "nickname") String nickname,
+                                            @Valid @RequestPart (name = "nickname" ) ValidateNickname validateNickname,
                                             @RequestPart(name = "file", required = false) MultipartFile file,
                                             HttpServletResponse response
                                             ) throws IOException {
-        return mypageService.modifyUserInfo(userDetails.getUser().getId(), nickname,file,response);
+        return mypageService.modifyUserInfo(userDetails.getUser().getId(), validateNickname.getNickname(),file,response);
     }
 
     @GetMapping("/list")

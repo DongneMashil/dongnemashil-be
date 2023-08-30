@@ -1,6 +1,5 @@
 package com.example.dongnemashilbe.review.service;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.like.repository.LikeRepository;
@@ -16,7 +15,6 @@ import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,8 +25,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -51,13 +55,13 @@ public class ReviewService {
         Slice<Review> reviews;
         if ("likes".equals(type)) {
             if (tags != null) {
-                reviews = reviewRepository.findAllByLikesAndTags(pageable, tags);
+                reviews = reviewRepository.findAllByLikesAndTags(pageable, tags,(long) tags.size());
             } else {
                 reviews = reviewRepository.findAllByLikes(pageable);
             }
         } else if ("recent".equals(type)) {
             if (tags != null) {
-                reviews = reviewRepository.findAllByRecentAndTags(pageable, tags);
+                reviews = reviewRepository.findAllByRecentAndTags(pageable, tags,(long) tags.size());
             } else {
                 reviews = reviewRepository.findAllByRecent(pageable);
             }
