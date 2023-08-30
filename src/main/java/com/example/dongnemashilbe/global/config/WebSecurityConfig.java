@@ -108,7 +108,7 @@ public class WebSecurityConfig {
         config.addAllowedMethod("DELETE");
         config.addAllowedHeader("*");
         config.addExposedHeader("*");
-        config.addExposedHeader("Accesstoken");
+        config.addExposedHeader("Authorization");
         config.addExposedHeader("Refreshtoken");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
