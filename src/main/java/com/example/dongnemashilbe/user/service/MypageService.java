@@ -8,6 +8,7 @@ import com.example.dongnemashilbe.like.repository.LikeRepository;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.security.jwt.JwtUtil;
+import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageResponseDto;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
@@ -79,9 +80,9 @@ public class MypageService {
 
     }
 
-    public Page<CommentResponseDto> getMyCommentList(Long id, Integer page) {
+    public Page<MyCommentResponseDto> getMyCommentList(Long id, Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 16);
 
-        return commentRepository.findAllByUser_Id(id,pageable).map(CommentResponseDto::new);
+        return commentRepository.findAllByUser_Id(id,pageable).map(MyCommentResponseDto::new);
     }
 }
