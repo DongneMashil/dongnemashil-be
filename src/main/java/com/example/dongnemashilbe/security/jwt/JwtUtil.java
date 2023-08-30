@@ -81,14 +81,14 @@ public class JwtUtil {
 
     // JWT Cookie 에 저장
     public void addJwtToHeader(String header, String token, HttpServletResponse res) {
-//        try {
-//            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+        try {
+            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
 
             res.addHeader(header,token);
 
-//        } catch (UnsupportedEncodingException e) {
-//            logger.error(e.getMessage()+"쿠키 전달 실패");
-//        }
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage()+"쿠키 전달 실패");
+        }
     }
 
     // JWT 토큰 substring
