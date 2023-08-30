@@ -39,7 +39,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try{
             if (req.getHeader(JwtUtil.ACCESSTOKEN_HEADER) == null)
                 throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
-            String token =URLDecoder.decode(req.getHeader(JwtUtil.ACCESSTOKEN_HEADER), "UTF-8");
+            String token =req.getHeader(JwtUtil.ACCESSTOKEN_HEADER);
             
             if (StringUtils.hasText(token) && token != null) {
 
