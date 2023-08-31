@@ -49,8 +49,9 @@ public class MypageService {
                                             MultipartFile file, HttpServletResponse response) throws IOException {
 
        User user = userRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
-        if (userRepository.findByNickname(nickname).isPresent())
-            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+        if (!user.getNickname().equals(nickname))
+            if (userRepository.findByNickname(nickname).isPresent())
+                throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
 
         if(user.getProfileImgUrl() != null)
             s3Upload.delete(user.getProfileImgUrl());

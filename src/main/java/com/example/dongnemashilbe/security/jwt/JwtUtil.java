@@ -119,6 +119,24 @@ public class JwtUtil {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
+    //리프레쉬 토큰 검증
+    public void refreshValidateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        } catch (ExpiredJwtException e) {
+            logger.error("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        } catch (IllegalArgumentException e) {
+            logger.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+    }
 
     // 토큰에서 사용자 정보 가져오기
     // 키 확인작업

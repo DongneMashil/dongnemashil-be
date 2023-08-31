@@ -66,13 +66,9 @@ public class UserService {
         String token =URLDecoder.decode(request.getHeader(JwtUtil.REFRESHTOKEN_HEADER), "UTF-8");
 
         String tokenValue = jwtUtil.substringToken(token);
-        try{
-            jwtUtil.validateToken(tokenValue);
-        }catch (ExpiredJwtException e){
-            throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
-        }catch (SecurityException | MalformedJwtException | SignatureException e) {
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
-        }
+
+        jwtUtil.refreshValidateToken(tokenValue);
+
         String nickname = jwtUtil.getUserInfoFromToken(tokenValue).getSubject();
 
         String accessToken = jwtUtil.createAccessToken(nickname,UserRoleEnum.USER);
