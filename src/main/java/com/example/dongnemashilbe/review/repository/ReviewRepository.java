@@ -92,5 +92,12 @@ public interface  ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByUser_Id(Long userId, Pageable pageable);
 
 
+    @Query("SELECT r FROM Review r WHERE (6371 * " +
+            "FUNCTION('acos', FUNCTION('cos', FUNCTION('radians', :latitude)) * " +
+            "FUNCTION('cos', FUNCTION('radians', r.latitude)) * " +
+            "FUNCTION('cos', FUNCTION('radians', r.longitude) - FUNCTION('radians', :longitude)) + " +
+            "FUNCTION('sin', FUNCTION('radians', :latitude)) * " +
+            "FUNCTION('sin', FUNCTION('radians', r.latitude)))) <= :radius")
+    List<Review> findNearbyEntities(@Param("latitude") double latitude, @Param("longitude") double longitude,@Param("radius") double radius);
 }
 

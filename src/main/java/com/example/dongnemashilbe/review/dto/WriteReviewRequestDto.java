@@ -12,4 +12,6 @@ public class WriteReviewRequestDto {
     private String address;
     private List<String> tag;
     private String roadName;
+    private double latitude;
+    private double longitude;
 }

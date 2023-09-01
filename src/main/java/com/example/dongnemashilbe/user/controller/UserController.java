@@ -57,12 +57,12 @@ public class UserController {
     }
 
     @PostMapping("/register/nickname")
-    public SuccessMessageDto checkedNickname(@RequestBody NicknameRequestDto nicknameRequestDto){
+    public SuccessMessageDto checkedNickname(@Valid @RequestBody NicknameRequestDto nicknameRequestDto){
         return userService.checkedNickname(nicknameRequestDto);
     }
 
     @PostMapping("/register/email")
-    public SuccessMessageDto checkedEmail(@RequestBody EmailRequestDto emailRequestDto){
+    public SuccessMessageDto checkedEmail(@Valid @RequestBody EmailRequestDto emailRequestDto){
         return userService.checkedEmail(emailRequestDto);
     }
 }

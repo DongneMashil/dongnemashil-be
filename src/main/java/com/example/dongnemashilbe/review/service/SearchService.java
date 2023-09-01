@@ -3,6 +3,7 @@ package com.example.dongnemashilbe.review.service;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
 import com.example.dongnemashilbe.like.repository.LikeRepository;
+import com.example.dongnemashilbe.review.dto.RadiusResponseDto;
 import com.example.dongnemashilbe.review.dto.SearchResponseDto;
 import com.example.dongnemashilbe.review.entity.Review;
 import com.example.dongnemashilbe.review.repository.ReviewRepository;
@@ -54,5 +55,9 @@ public class SearchService {
         Page<SearchResponseDto> resultPage = new PageImpl<>(dtos, pageable, reviews.getTotalElements());
 
         return resultPage;
+    }
+
+    public List<RadiusResponseDto> searchRadius(double latitude, double longitude, double radius) {
+        return reviewRepository.findNearbyEntities(latitude,longitude,radius).stream().map(RadiusResponseDto::new).toList();
     }
 }

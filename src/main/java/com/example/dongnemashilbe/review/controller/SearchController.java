@@ -1,19 +1,17 @@
 package com.example.dongnemashilbe.review.controller;
 
 import com.example.dongnemashilbe.aop.ExeTimer;
+import com.example.dongnemashilbe.review.dto.RadiusResponseDto;
 import com.example.dongnemashilbe.review.dto.SearchResponseDto;
 import com.example.dongnemashilbe.review.service.SearchService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +35,11 @@ public class SearchController {
         return searchService.search(type,page, q, tag,userDetails.getUser());
     }
 
+    @GetMapping("/nearby")
+    public List<RadiusResponseDto> searchRadius(@RequestParam double latitude,
+                                                @RequestParam double longitude,
+                                                @RequestParam double radius){
+        return searchService.searchRadius(latitude,longitude,radius);
+    }
 
 }
