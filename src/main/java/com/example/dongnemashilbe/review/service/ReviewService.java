@@ -12,10 +12,14 @@ import com.example.dongnemashilbe.review.repository.Review_TagRepository;
 import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
+import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.entity.User;
+import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -45,6 +49,7 @@ public class ReviewService {
     private final TagRepository tagRepository;
     private final Review_TagRepository review_tagRepository;
     private final S3Upload s3Upload;
+    private final UserRepository userRepository;
 
     public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable,String tag,User user) {
         List<String> tags = null;
@@ -243,6 +248,16 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
+    }
+    public Slice<MyPageListResponseDto> getUserReview(String nickname,Integer page,Integer size) {
+        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Slice<Review> reviews = reviewRepository.findAllByUser_Id(user.getId(),pageable);
+        List<MyPageListResponseDto> reviewDtos = reviews.getContent().stream()
+                .map(MyPageListResponseDto::new)
+                .toList();
+
+        return new SliceImpl<>(reviewDtos,pageable,reviews.hasNext() );
     }
     /*=============================================메서드=============================================================*/
     private Review findReviewById(Long id) {
