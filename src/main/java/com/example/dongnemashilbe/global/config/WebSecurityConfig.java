@@ -77,7 +77,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/reviews").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
                         .requestMatchers("/api/refreshtoken").permitAll()
-                        .requestMatchers("/api/search").permitAll()
+                        .requestMatchers("/api/search","/api/search/**").permitAll()
                         .requestMatchers("/api/kakao","/api/kakao?code=").permitAll()
                         .requestMatchers("/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**",
                                 "/swagger-ui.html","/swagger*/**").permitAll()

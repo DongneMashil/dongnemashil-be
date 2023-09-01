@@ -37,6 +37,12 @@ public class Review extends Timestamped {
     @Column(nullable = false)
     public String title;
 
+    @Column(nullable = false)
+    private double latitude;
+
+    @Column(nullable = false)
+    private double longitude;
+
     @Column(length = 1000)
     private String mainImgUrl;
 
@@ -97,6 +103,8 @@ public class Review extends Timestamped {
         this.middleMainImgUrl=middleMainImg;
         this.middleSubImgUrl=middleSubImageUrlsString;
         this.smallSubImgUrl=smallSubImageUrlsString;
+        this.latitude=writeReviewRequestDto.getLatitude();
+        this.longitude=writeReviewRequestDto.getLongitude();
     }
 
 
