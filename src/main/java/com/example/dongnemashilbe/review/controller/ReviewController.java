@@ -4,6 +4,7 @@ package com.example.dongnemashilbe.review.controller;
 import com.example.dongnemashilbe.review.dto.*;
 import com.example.dongnemashilbe.review.service.ReviewService;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
+import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,6 +53,13 @@ public class ReviewController {
         }
 
         return reviewService.getReview(id,userDetails.getUser());
+    }
+
+    @GetMapping("/user")
+    public Slice<MyPageListResponseDto> getUserReview(@RequestParam String nickname,
+                                                      @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                      @RequestParam(value = "size", defaultValue = "8") Integer size){
+        return reviewService.getUserReview(nickname,page,size);
     }
 
     @PostMapping(value = "",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
