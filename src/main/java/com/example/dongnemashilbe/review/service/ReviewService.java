@@ -16,6 +16,7 @@ import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -46,6 +47,7 @@ public class ReviewService {
     private final Review_TagRepository review_tagRepository;
     private final S3Upload s3Upload;
 
+    @Cacheable(value = "reviews", key = "#type + '::' + #tag + '::' + #pageable.pageNumber")
     public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable,String tag,User user) {
         List<String> tags = null;
         if (tag != null){
