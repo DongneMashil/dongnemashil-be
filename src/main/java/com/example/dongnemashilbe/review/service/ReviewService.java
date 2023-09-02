@@ -264,6 +264,12 @@ public class ReviewService {
 
         return new SliceImpl<>(reviewDtos,pageable,reviews.hasNext() );
     }
+
+    public String getUserImg(String nickname) {
+        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+        return user.getProfileImgUrl();
+    }
+
     /*=============================================메서드=============================================================*/
     private Review findReviewById(Long id) {
         return reviewRepository.findById(id)
@@ -366,4 +372,6 @@ public class ReviewService {
         InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
         return s3Upload.upload2(mainImgFile.getOriginalFilename(), inputStream);
     }
+
+
 }

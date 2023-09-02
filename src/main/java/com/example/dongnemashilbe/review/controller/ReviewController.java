@@ -62,6 +62,11 @@ public class ReviewController {
         return reviewService.getUserReview(nickname,page,size);
     }
 
+    @GetMapping("/userimg")
+    public String getUserImg(@RequestParam String nickname){
+        return reviewService.getUserImg(nickname);
+    }
+
     @PostMapping(value = "",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public WriteReviewResponseDto createReview(@RequestPart (name = "data" )WriteReviewRequestDto writeReviewRequestDto,
                                                @RequestPart (name = "mainImgUrl",required = false) MultipartFile mainImgUrl,
