@@ -55,7 +55,7 @@ public class ReviewService {
     private final S3Upload s3Upload;
     private final UserRepository userRepository;
 
-//    @Cacheable(value = "reviews", key = "#type + '::' + #tag + '::' + #pageable.pageNumber")
+    @Cacheable(value = "reviews", key = "#type + '::' + #tag + '::' + #pageable.pageNumber")
     public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable,String tag,User user) {
         List<String> tags = null;
         if (tag != null){
