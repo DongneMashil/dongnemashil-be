@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class MainPageReviewResponseDto implements Serializable {
+public class MainPageReviewResponseDto  {
     private Long id;
     private String nickname;
     private String roadName;
