@@ -12,25 +12,19 @@ import com.example.dongnemashilbe.review.repository.Review_TagRepository;
 import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
-import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-
-import org.springframework.cache.annotation.Cacheable;
-
 import org.springframework.data.domain.PageRequest;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

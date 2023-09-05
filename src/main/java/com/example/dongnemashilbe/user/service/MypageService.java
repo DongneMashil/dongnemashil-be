@@ -1,6 +1,5 @@
 package com.example.dongnemashilbe.user.service;
 
-import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
 import com.example.dongnemashilbe.comment.repository.CommentRepository;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
