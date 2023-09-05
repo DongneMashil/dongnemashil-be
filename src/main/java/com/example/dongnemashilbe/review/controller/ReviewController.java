@@ -31,7 +31,7 @@ public class ReviewController {
             @RequestParam(value = "type", defaultValue = "likes") String type,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @RequestParam(value = "size", defaultValue = "6") Integer size,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -58,7 +58,7 @@ public class ReviewController {
     @GetMapping("/user")
     public Slice<MyPageListResponseDto> getUserReview(@RequestParam String nickname,
                                                       @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                      @RequestParam(value = "size", defaultValue = "8") Integer size){
+                                                      @RequestParam(value = "size", defaultValue = "6") Integer size){
         return reviewService.getUserReview(nickname,page,size);
     }
 

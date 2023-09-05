@@ -49,10 +49,10 @@ public class SearchService {
 
         if (cachedResult != null) {
             List<SearchResponseDto> dtos = objectMapper.readValue(cachedResult, new TypeReference<List<SearchResponseDto>>() {});
-            return new PageImpl<>(dtos, PageRequest.of(page - 1, 12), dtos.size());
+            return new PageImpl<>(dtos, PageRequest.of(page - 1, 6), dtos.size());
         }
 
-        Pageable pageable = PageRequest.of(page-1, 12);
+        Pageable pageable = PageRequest.of(page-1, 6);
 
         List<String> tags = tag != null && !tag.isEmpty() ? tag.contains(",")
                 ? Arrays.asList(tag.split(",")) : Collections.singletonList(tag) : Collections.emptyList();
