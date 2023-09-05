@@ -1,7 +1,5 @@
 package com.example.dongnemashilbe.user.controller;
 
-import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
-import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
