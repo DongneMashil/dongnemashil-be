@@ -17,6 +17,7 @@ public class LikeController {
 
     private final LikeService likeService;
 
+    // 좋아요 기능
     @PostMapping("/{id}/likes")
     public SuccessMessageDto like(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return likeService.like(id, userDetails.getUser().getNickname());

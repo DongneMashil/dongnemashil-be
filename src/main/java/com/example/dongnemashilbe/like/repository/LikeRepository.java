@@ -17,10 +17,8 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     Optional<Like> findByUserAndReview(User user, Review review);
 
-
     @Query("SELECT COUNT(l) FROM Like l WHERE l.review = :review")
     Integer countByReview(@Param("review") Review review);
-
 
     Page<Like> findAllByUser_Id(Long id, Pageable pageable);
 }
