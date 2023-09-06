@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -36,10 +37,11 @@ public class SearchService {
     private final LikeRepository likeRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
-    public Page<SearchResponseDto> search(String type, Integer page, String q, String tag, User user) throws JsonProcessingException {
+    // 검색 메서드
+    public Page<SearchResponseDto> search(String type, Integer page, String q, String tag, User user)
+            throws JsonProcessingException {
 
         String redisKey = buildRedisKey(type, q, tag, page);
-
 
         String cachedResult = redisTemplate.opsForValue().get(redisKey); // 레디스에서 결과 가져오기
 
@@ -49,6 +51,7 @@ public class SearchService {
 
         if (cachedResult != null) {
             List<SearchResponseDto> dtos = objectMapper.readValue(cachedResult, new TypeReference<List<SearchResponseDto>>() {});
+
             return new PageImpl<>(dtos, PageRequest.of(page - 1, 6), dtos.size());
         }
 
@@ -86,7 +89,6 @@ public class SearchService {
                 success = redisTemplate.expire(redisKey, 3, TimeUnit.MINUTES);
                 retries++;
             }
-
             // 여전히 실패한다면 예외 처리
             if (!success) {
                 throw new CustomException(ErrorCode.OUT_OF_RANGE);
@@ -96,11 +98,13 @@ public class SearchService {
         return resultPage;
     }
 
+    // 반경검색
     public List<RadiusResponseDto> searchRadius(double latitude, double longitude, double radius) {
         return reviewRepository.findNearbyEntities(latitude,longitude,radius).stream().map(RadiusResponseDto::new).toList();
     }
+
+    // 레디스 캐시 생성
     private String buildRedisKey(String type, String q, String tag,Integer page) {
         return "search:{\"type\":\"" + type + "\",\"query\":\"" + q + "\",\"tag\":\"" + tag + "\",\"page\":\"" + page + "\"}";
     }
-
 }

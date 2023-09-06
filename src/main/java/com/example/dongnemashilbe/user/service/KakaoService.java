@@ -48,8 +48,6 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         //4. JWT 토큰 반환
-
-
         jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,
                 jwtUtil.createAccessToken(kakaoUser.getNickname(),kakaoUser.getRole()),response);
 
@@ -152,7 +150,7 @@ public class KakaoService {
                 kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, UserRoleEnum.USER, kakaoId,email);
             }else{
                 int num = new Random().nextInt(90000) + 1000;
-                String newNickname = kakaoUserInfo.getNickname() + num; // 두부준영 1000 ~ 89999
+                String newNickname = kakaoUserInfo.getNickname() + num;
                 kakaoUser = new User(newNickname, encodedPassword, UserRoleEnum.USER, kakaoId,email);
             }
 
