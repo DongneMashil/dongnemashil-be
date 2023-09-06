@@ -71,7 +71,6 @@ main ← develop ← feature/[브랜치명],#[이슈번호]
 
 ## 💡ERD
 
-#![스크린샷 2023-08-16 오후 8 08 14](https://github.com/DongneMashil/dongnemashil-be/assets/128367271/0423f233-fb3d-4f85-b6c2-a4ebea4d9912)
 ![ERD최종](https://github.com/DongneMashil/dongnemashil-be/assets/128367271/6c32971c-a864-4e2a-9036-3fb6bc937622)
 
 
