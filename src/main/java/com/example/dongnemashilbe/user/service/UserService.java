@@ -10,9 +10,6 @@ import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.entity.UserRoleEnum;
 import com.example.dongnemashilbe.user.repository.UserRepository;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    // 회원가입 메서드
     public void signup(SignupRequestDto signupRequestDto, HttpServletResponse response) {
         String email = signupRequestDto.getEmail();
         String nickname = signupRequestDto.getNickname();
@@ -59,6 +57,7 @@ public class UserService {
         jwtUtil.addJwtToHeader(JwtUtil.REFRESHTOKEN_HEADER,refreshToken,response);
     }
 
+    // 리프레쉬토큰 조회 메서드
     public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
         if (request.getHeader(JwtUtil.REFRESHTOKEN_HEADER) == null)
@@ -76,12 +75,14 @@ public class UserService {
         jwtUtil.addJwtToHeader(JwtUtil.ACCESSTOKEN_HEADER,accessToken,response);
     }
 
+    // 닉네임체크 메서드
     public SuccessMessageDto checkedNickname(NicknameRequestDto nicknameRequestDto) {
         if(userRepository.findByNickname(nicknameRequestDto.getNickname()).isPresent())
             throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         return new SuccessMessageDto("사용가능한 닉네임 입니다.");
     }
 
+    // 이메일체크 메서드
     public SuccessMessageDto checkedEmail(EmailRequestDto emailRequestDto) {
         if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);

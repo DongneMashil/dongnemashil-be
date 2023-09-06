@@ -1,7 +1,5 @@
 package com.example.dongnemashilbe.user.controller;
 
-import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
-import com.example.dongnemashilbe.review.dto.WriteReviewRequestDto;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
 import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
@@ -27,13 +25,13 @@ public class MyPageController {
 
     private final MypageService mypageService;
 
-
+    // 유저 정보가져오기
     @GetMapping("")
     public MyPageResponseDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return mypageService.getUserInfo(userDetails.getUser());
     }
 
-
+    // 유저 정보 수정
     @PatchMapping("")
     public SuccessMessageDto modifyUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @Valid @RequestPart (name = "nickname" ) ValidateNickname validateNickname,
@@ -43,6 +41,7 @@ public class MyPageController {
         return mypageService.modifyUserInfo(userDetails.getUser().getId(), validateNickname.getNickname(),file,response);
     }
 
+    // 유저 좋아요 갯수 가져오기
     @GetMapping("/list")
     public Slice<MyPageListResponseDto> getMyList(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                   @RequestParam(value = "page", defaultValue = "1")  Integer page,
@@ -51,7 +50,7 @@ public class MyPageController {
 
     }
 
-
+    //유저 댓글 갯수 가져오기
     @GetMapping("/comments")
     public Slice<MyCommentResponseDto> getMyCommentList(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                         @RequestParam(value = "page", defaultValue = "1") Integer page

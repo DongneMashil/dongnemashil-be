@@ -5,11 +5,9 @@ import com.example.dongnemashilbe.review.entity.Review;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 public class MainPageReviewResponseDto  {
     private Long id;
     private String nickname;

@@ -13,7 +13,8 @@ public class SignupRequestDto {
     private String email;
 
     @NotBlank(message = "패스워드 형식이 맞지 않습니다.")
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,15}$",message = "비밀번호는 최소 8자리 이상이며, 영문 숫자, 특수문자(!@#$%^&*)가 모두 포함되어야 합니다.")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,15}$",
+            message = "비밀번호는 최소 8자리 이상이며, 영문 숫자," + " 특수문자(!@#$%^&*)가 모두 포함되어야 합니다.")
     private String password;
 
     @NotBlank(message = "닉네임 형식이 맞지 않습니다.")

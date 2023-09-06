@@ -19,22 +19,23 @@ import java.util.List;
 public class SearchController {
 
     private final SearchService searchService;
-
+    // 검색기능
     @ExeTimer
     @GetMapping("")
     public Page<SearchResponseDto> search(@RequestParam(value = "type", defaultValue = "likes") String type,
                                           @RequestParam(value = "page", defaultValue = "1") Integer page,
                                           @RequestParam(required = false) String tag,
                                           @RequestParam String q,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails)
+            throws JsonProcessingException {
         try{
             userDetails.getUser();
         }catch (NullPointerException e){
             return searchService.search(type,page, q, tag,null);
         }
-        return searchService.search(type,page, q, tag,userDetails.getUser());
+        return searchService.search(type, page, q, tag, userDetails.getUser());
     }
-
+    // 반경검색
     @GetMapping("/nearby")
     public List<RadiusResponseDto> searchRadius(@RequestParam double latitude,
                                                 @RequestParam double longitude,

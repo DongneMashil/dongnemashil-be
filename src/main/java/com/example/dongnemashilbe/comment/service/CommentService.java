@@ -12,7 +12,6 @@ import com.example.dongnemashilbe.global.dto.SuccessMessageDto;
 import com.example.dongnemashilbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -71,6 +70,7 @@ public class CommentService {
     private Review getReview(Long reviewId){
         Review review = reviewRepository.findById(reviewId).orElseThrow(()
                 -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
+
         return review;
     }
 
@@ -81,7 +81,7 @@ public class CommentService {
         return comment;
     }
 
-    private void validateNickname(String userNickname , String commentNickname){
+    private void validateNickname(String userNickname, String commentNickname){
         if(!userNickname.equals(commentNickname)){
             throw new CustomException(ErrorCode.NOT_THE_AUTHOR);
         }

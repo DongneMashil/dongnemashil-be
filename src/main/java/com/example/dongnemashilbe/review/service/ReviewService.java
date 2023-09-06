@@ -12,31 +12,22 @@ import com.example.dongnemashilbe.review.repository.Review_TagRepository;
 import com.example.dongnemashilbe.review.repository.TagRepository;
 import com.example.dongnemashilbe.s3.S3Upload;
 import com.example.dongnemashilbe.security.impl.UserDetailsImpl;
-import com.example.dongnemashilbe.user.dto.MyCommentResponseDto;
 import com.example.dongnemashilbe.user.dto.MyPageListResponseDto;
 import com.example.dongnemashilbe.user.entity.User;
 import com.example.dongnemashilbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-
-import org.springframework.cache.annotation.Cacheable;
-
 import org.springframework.data.domain.PageRequest;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +47,8 @@ public class ReviewService {
     private final UserRepository userRepository;
 
 //    @Cacheable(value = "reviews", key = "#type + '::' + #tag + '::' + #pageable.pageNumber")
-    public Slice<MainPageReviewResponseDto> findAllByType(String type, Pageable pageable,String tag,User user) {
+    public Slice<MainPageReviewResponseDto> getAllReviews(String type,Integer page, Integer size,String tag,User user) {
+        Pageable pageable = PageRequest.of(page - 1, size);
         List<String> tags = null;
         if (tag != null){
             tags = Arrays.asList(tag.split(","));
@@ -86,14 +78,12 @@ public class ReviewService {
             if (user != null) {
                 likebool = likeRepository.findByUserAndReview(user, review).isPresent();
             }
-
-
-
             dtos.add(new MainPageReviewResponseDto(review, likeCount, likebool));
         }
         return new SliceImpl<>(dtos, pageable, reviews.hasNext());
     }
 
+    // 단일 리뷰 조회
     public DetailPageResponseDto getReview(Long id, User user) {
 
         Review review = findReviewById(id);
@@ -109,6 +99,7 @@ public class ReviewService {
         return new DetailPageResponseDto(review, likeCount, commentCount,likebool);
     }
 
+    // 리뷰 작성
     public WriteReviewResponseDto createReview(WriteReviewRequestDto writeReviewRequestDto,
                                                User user,
                                                MultipartFile mainImgFile, List<MultipartFile> subImgUrl,
@@ -154,6 +145,7 @@ public class ReviewService {
         return new WriteReviewResponseDto(reviewRepository.save(review).getId());
     }
 
+    //리뷰 수정
     @Transactional
     public WriteReviewResponseDto updateReview(Long id,
                                                DetailPageRequestDto detailPageRequestDto,
@@ -169,25 +161,7 @@ public class ReviewService {
         String smallMainImg = resizingS3Upload(mainImgFile,360);
         String middleMainImg = resizingS3Upload(mainImgFile,768);
         // 기존 파일 삭제
-        if (review.getMainImgUrl() != null) {
-            s3Upload.deleteExistingFile(review.getMainImgUrl());
-            s3Upload.deleteExistingFile(review.getMiddleMainImgUrl());
-            s3Upload.deleteExistingFile(review.getSmallMainImgUrl());
-        }
-        if (review.getSubImgUrl() != null) {
-            for (String subImageUrl : review.getSubImgUrl().split(",")) {
-                s3Upload.deleteExistingFile(subImageUrl);
-            }
-            for (String subImageUrl : review.getMiddleSubImgUrl().split(",")) {
-                s3Upload.deleteExistingFile(subImageUrl);
-            }
-            for (String subImageUrl : review.getSmallSubImgUrl().split(",")) {
-                s3Upload.deleteExistingFile(subImageUrl);
-            }
-        }
-        if (review.getVideoUrl() != null) {
-            s3Upload.deleteExistingFile(review.getVideoUrl());
-        }
+        deleteS3(review,s3Upload);
 
         review.update(detailPageRequestDto, userDetails.getUser(),
                 mediaUrlsDto.getMainImgUrl(),
@@ -201,7 +175,7 @@ public class ReviewService {
         List<Review_Tag> existingTags = review_tagRepository.findAllByReview(review);
         review_tagRepository.deleteAll(existingTags);
 
-
+        //태그 등록
         List<String> newTagNames = detailPageRequestDto.getTag();
         for (String newTagName : newTagNames) {
             Tag tag = tagRepository.findByName(newTagName).orElse(new Tag(newTagName));
@@ -212,41 +186,15 @@ public class ReviewService {
 
     }
 
+    //리뷰 삭제
     @Transactional
     public void deleteReview(Long id, UserDetailsImpl userDetails) {
 
         Review review = findReviewById(id);
         validate(review, userDetails);
 
-        if (s3Upload == null) {
-            throw new CustomException(ErrorCode.OUT_OF_RANGE);
-        }
         try {
-            if (review.getMainImgUrl() != null) {
-                s3Upload.delete(review.getMainImgUrl());
-                s3Upload.delete(review.getMiddleMainImgUrl());
-                s3Upload.delete(review.getSmallMainImgUrl());
-            }
-            if (review.getVideoUrl() != null) {
-                s3Upload.delete(review.getVideoUrl());
-            }
-            if (review.getSubImgUrl() != null) {
-                for (String subImgUrl : review.getSubImgUrl().split(",")) {
-                    if (subImgUrl != null && !subImgUrl.isEmpty()) {
-                        s3Upload.delete(review.getSubImgUrl());
-                    }
-                }
-                for (String subImgUrl : review.getMiddleSubImgUrl().split(",")) {
-                    if (subImgUrl != null && !subImgUrl.isEmpty()) {
-                        s3Upload.delete(review.getSubImgUrl());
-                    }
-                }
-                for (String subImgUrl : review.getSmallSubImgUrl().split(",")) {
-                    if (subImgUrl != null && !subImgUrl.isEmpty()) {
-                        s3Upload.delete(review.getSubImgUrl());
-                    }
-                }
-            }
+            deleteS3(review,s3Upload);
         } catch (Exception e) {
 
             throw new CustomException(ErrorCode.OUT_OF_RANGE);
@@ -254,8 +202,11 @@ public class ReviewService {
 
         reviewRepository.delete(review);
     }
+
+    //유저의 리뷰 리스트 조회
     public Slice<MyPageListResponseDto> getUserReview(String nickname,Integer page,Integer size) {
-        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findByNickname(nickname).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER));
         Pageable pageable = PageRequest.of(page - 1, size);
         Slice<Review> reviews = reviewRepository.findAllByUser_Id(user.getId(),pageable);
         List<MyPageListResponseDto> reviewDtos = reviews.getContent().stream()
@@ -265,17 +216,22 @@ public class ReviewService {
         return new SliceImpl<>(reviewDtos,pageable,reviews.hasNext() );
     }
 
+    //유저의 프로필이미지 조회
     public String getUserImg(String nickname) {
-        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findByNickname(nickname).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER));
         return user.getProfileImgUrl();
     }
 
     /*=============================================메서드=============================================================*/
+
+    //리뷰 조회
     private Review findReviewById(Long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
     }
 
+    // 작성자 확인 메서드
     private void validate(Review review, UserDetailsImpl userDetails) {
 
         if (!userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")) {
@@ -285,6 +241,7 @@ public class ReviewService {
         }
     }
 
+    // 확장자명 판별 메서드
     private void validateMediaFiles(MultipartFile mainImgFile, MultipartFile videoFile, List<MultipartFile> subImgUrl){
 
         List<String> allowedImageExtensions = Arrays.asList("jpg", "jpeg", "png");
@@ -319,6 +276,7 @@ public class ReviewService {
         }
     }
 
+    //S3이미지 업로드
     private MediaUrlsDto setS3Upload(MultipartFile mainImgFile,
                                      List<MultipartFile>subImgUrl,
                                      MultipartFile videoFile) throws IOException {
@@ -349,9 +307,11 @@ public class ReviewService {
         if (videoFile != null) {
             videoUrl = s3Upload.upload(videoFile);
         }
-        return new MediaUrlsDto(mainImgUrl, subImageUrlsString,middleSubImageUrlsString,smallSubImageUrlsString, videoUrl);
+        return new MediaUrlsDto(mainImgUrl,subImageUrlsString,
+                middleSubImageUrlsString,smallSubImageUrlsString,videoUrl);
     }
 
+    //이미지 리사이징
     private String resizingS3Upload(MultipartFile mainImgFile,int width) throws IOException {
         //360x480
         BufferedImage image = ImageIO.read(mainImgFile.getInputStream());
@@ -373,5 +333,32 @@ public class ReviewService {
         return s3Upload.upload2(mainImgFile.getOriginalFilename(), inputStream);
     }
 
-
+    // 리뷰 삭제
+    private void deleteS3(Review review, S3Upload s3Upload) throws UnsupportedEncodingException {
+        if (review.getMainImgUrl() != null) {
+            s3Upload.delete(review.getMainImgUrl());
+            s3Upload.delete(review.getMiddleMainImgUrl());
+            s3Upload.delete(review.getSmallMainImgUrl());
+        }
+        if (review.getVideoUrl() != null) {
+            s3Upload.delete(review.getVideoUrl());
+        }
+        if (!review.getSubImgUrl().isEmpty()) {
+            for (String subImgUrl : review.getSubImgUrl().split(",")) {
+                if (subImgUrl != null && !subImgUrl.isEmpty()) {
+                    s3Upload.delete(review.getSubImgUrl());
+                }
+            }
+            for (String subImgUrl : review.getMiddleSubImgUrl().split(",")) {
+                if (subImgUrl != null && !subImgUrl.isEmpty()) {
+                    s3Upload.delete(review.getSubImgUrl());
+                }
+            }
+            for (String subImgUrl : review.getSmallSubImgUrl().split(",")) {
+                if (subImgUrl != null && !subImgUrl.isEmpty()) {
+                    s3Upload.delete(review.getSubImgUrl());
+                }
+            }
+        }
+    }
 }

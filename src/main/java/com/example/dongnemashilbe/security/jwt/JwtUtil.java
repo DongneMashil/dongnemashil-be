@@ -79,7 +79,7 @@ public class JwtUtil {
                         .compact();
     }
 
-    // JWT Cookie 에 저장
+    // JWT 헤더로 전달
     public void addJwtToHeader(String header, String token, HttpServletResponse res) {
         try {
             token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
@@ -87,7 +87,7 @@ public class JwtUtil {
             res.addHeader(header,token);
 
         } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage()+"쿠키 전달 실패");
+            logger.error(e.getMessage()+"헤더로 토큰 전달");
         }
     }
 
@@ -119,6 +119,7 @@ public class JwtUtil {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
+
     //리프레쉬 토큰 검증
     public void refreshValidateToken(String token) {
         try {
@@ -143,6 +144,4 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-
-
 }

@@ -1,6 +1,5 @@
 package com.example.dongnemashilbe.user.service;
 
-import com.example.dongnemashilbe.comment.dto.CommentResponseDto;
 import com.example.dongnemashilbe.comment.repository.CommentRepository;
 import com.example.dongnemashilbe.exception.CustomException;
 import com.example.dongnemashilbe.exception.ErrorCode;
@@ -38,17 +37,17 @@ public class MypageService {
     private final CommentRepository commentRepository;
     private final JwtUtil jwtUtil;
 
-
+    // 유저정보 조회 메서드
     public MyPageResponseDto getUserInfo(User user) {
         return new MyPageResponseDto(user);
     }
 
-
+    // 유저정보 수정 메서드
     @Transactional
     public SuccessMessageDto modifyUserInfo(Long id, String nickname,
                                             MultipartFile file, HttpServletResponse response) throws IOException {
 
-       User user = userRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
+       User user = userRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_USER));
         if (!user.getNickname().equals(nickname))
             if (userRepository.findByNickname(nickname).isPresent())
                 throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
@@ -68,19 +67,19 @@ public class MypageService {
         return new SuccessMessageDto("회원정보 수정이 완료 되었습니다.");
     }
 
+    //유저 좋아요 갯수 조회 메서드
     @Transactional
     public Page<MyPageListResponseDto> getMyList(Integer page , Long userId, String q) {
         Pageable pageable = PageRequest.of(page - 1, 8);
-
 
         if (q.equals("likes")) {
            return likeRepository.findAllByUser_Id(userId,pageable).map(MyPageListResponseDto::new);
         }
 
         return reviewRepository.findAllByUser_Id(userId,pageable).map(MyPageListResponseDto::new);
-
     }
 
+    //유저 댓글 갯수 조회 메서드
     public Page<MyCommentResponseDto> getMyCommentList(Long id, Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 16);
 
