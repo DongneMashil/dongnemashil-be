@@ -70,6 +70,7 @@ public class CommentService {
     private Review getReview(Long reviewId){
         Review review = reviewRepository.findById(reviewId).orElseThrow(()
                 -> new CustomException(ErrorCode.REVIEW_NOT_EXIST));
+
         return review;
     }
 
@@ -80,7 +81,7 @@ public class CommentService {
         return comment;
     }
 
-    private void validateNickname(String userNickname , String commentNickname){
+    private void validateNickname(String userNickname, String commentNickname){
         if(!userNickname.equals(commentNickname)){
             throw new CustomException(ErrorCode.NOT_THE_AUTHOR);
         }

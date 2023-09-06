@@ -47,7 +47,7 @@ public class MypageService {
     public SuccessMessageDto modifyUserInfo(Long id, String nickname,
                                             MultipartFile file, HttpServletResponse response) throws IOException {
 
-       User user = userRepository.findById(id).orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_USER));
+       User user = userRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_USER));
         if (!user.getNickname().equals(nickname))
             if (userRepository.findByNickname(nickname).isPresent())
                 throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
@@ -71,13 +71,11 @@ public class MypageService {
     public Page<MyPageListResponseDto> getMyList(Integer page , Long userId, String q) {
         Pageable pageable = PageRequest.of(page - 1, 8);
 
-
         if (q.equals("likes")) {
            return likeRepository.findAllByUser_Id(userId,pageable).map(MyPageListResponseDto::new);
         }
 
         return reviewRepository.findAllByUser_Id(userId,pageable).map(MyPageListResponseDto::new);
-
     }
 
     public Page<MyCommentResponseDto> getMyCommentList(Long id, Integer page) {

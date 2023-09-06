@@ -25,16 +25,16 @@ public class UserController {
     private final UserService userService;
     private final KakaoService kakaoService;
 
-
+    // 회원가입
     @PostMapping("/register")
     public SuccessMessageDto signup(@Valid @RequestBody SignupRequestDto signupRequestDto, HttpServletResponse response) {
 
         userService.signup(signupRequestDto,response);
 
-
         return new SuccessMessageDto("회원가입 성공");
     }
 
+    // 카카오 로그인
     @PostMapping("/kakao")
     public SuccessMessageDto kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         // code: 카카오 서버로부터 받은 인가 코드 Service 전달 후 인증 처리 및 JWT 반환
@@ -43,12 +43,14 @@ public class UserController {
         return new SuccessMessageDto("로그인 성공");
     }
 
+    // 에세스토큰 조회
     @GetMapping("/accesstoken")
     public UserinfoDto getAccessToken(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return new UserinfoDto(userDetails.getUser().getEmail(),userDetails.getUser().getNickname());
 
     }
 
+    // 리프레쉬토큰 조회
     @GetMapping("/refreshtoken")
     public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
@@ -56,11 +58,13 @@ public class UserController {
 
     }
 
+    // 닉네임 확인
     @PostMapping("/register/nickname")
     public SuccessMessageDto checkedNickname(@Valid @RequestBody NicknameRequestDto nicknameRequestDto){
         return userService.checkedNickname(nicknameRequestDto);
     }
 
+    // 이메일 확인
     @PostMapping("/register/email")
     public SuccessMessageDto checkedEmail(@Valid @RequestBody EmailRequestDto emailRequestDto){
         return userService.checkedEmail(emailRequestDto);
