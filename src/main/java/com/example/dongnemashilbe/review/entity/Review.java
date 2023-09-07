@@ -51,7 +51,7 @@ public class Review extends Timestamped {
     @Column(length = 1000)
     private String smallMainImgUrl;
 
-    @Column(length = 10000)
+    @Column(length = 10000,columnDefinition = "TEXT")
     private String subImgUrl;
 
     @Column(length = 10000,columnDefinition = "TEXT")

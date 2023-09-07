@@ -25,6 +25,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -46,7 +47,6 @@ public class ReviewService {
     private final S3Upload s3Upload;
     private final UserRepository userRepository;
 
-//    @Cacheable(value = "reviews", key = "#type + '::' + #tag + '::' + #pageable.pageNumber")
     public Slice<MainPageReviewResponseDto> getAllReviews(String type,Integer page, Integer size,String tag,User user) {
         Pageable pageable = PageRequest.of(page - 1, size);
         List<String> tags = null;
