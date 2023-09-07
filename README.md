@@ -229,9 +229,6 @@ f)
 
 [동네마실 브로셔 확인하기](https://cosmic-soybean-5d3.notion.site/fb2409ce476d49ca88a67b68be485b4f?pvs=4)
 
-
-### BE
-
 <details>
 
 ---
@@ -320,3 +317,10 @@ S3객체를 디코딩해서 디비와 맞으면 삭제 → 디코딩 하는 코�
 ---
 
 </details>
+
+
+## 📚스터디
+---
+https://cosmic-soybean-5d3.notion.site/74d52937736e4e8db95d96a8a7ed638a?pvs=4
+
+
