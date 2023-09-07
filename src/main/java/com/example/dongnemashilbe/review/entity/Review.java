@@ -114,6 +114,7 @@ public class Review extends Timestamped {
         this.title = detailPageRequestDto.getTitle();
         this.content = detailPageRequestDto.getContent();
         this.videoUrl = videoUrl;
+        this.roadName = detailPageRequestDto.getRoadName();
         this.mainImgUrl = mainImgUrl;
         this.subImgUrl = subImageUrlsString;
         this.user = user;

@@ -11,6 +11,7 @@ public class DetailPageRequestDto {
     private String mainImgUrl;
     private List<String> subImgUrl;
     private String videoUrl;
+    private String roadName;
     private String profileImgUrl;
     private String nickname;
     private String address;
